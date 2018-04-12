@@ -1,5 +1,6 @@
 package com.infoPulse.lessons.model.service;
 
+import com.infoPulse.lessons.model.dto.CustomerDTO;
 import com.infoPulse.lessons.model.dto.UserDto;
 import com.infoPulse.lessons.model.entity.*;
 import com.infoPulse.lessons.model.repository.*;
@@ -13,17 +14,12 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-public class CustomerServiceImpl {
+public class CustomerServiceImpl implements CustomerService {
 
     // Fields
-
     private UserRepository userRepository;
     private CustomerRepository customerRepository;
     private CustomerStatusRepository customerStatusRepository;
-    private ServiceRepository serviceRepository;
-    private ServiceStatusRepository serviceStatusRepository;
-    private CustomerServiceRepository customerServiceRepository;
-
 
     @Autowired
     Logger logger;
@@ -39,52 +35,56 @@ public class CustomerServiceImpl {
     public void setCustomerRepository(CustomerRepository customerRepository) {
         this.customerRepository = customerRepository;
     }
+
     @Autowired
     public void setCustomerStatusRepository(CustomerStatusRepository customerStatusRepository) {
         this.customerStatusRepository = customerStatusRepository;
     }
-    @Autowired
-    public void setServiceRepository(ServiceRepository serviceRepository) {
-        this.serviceRepository = serviceRepository;
-    }
-    @Autowired
-    public void setServiceStatusRepository(ServiceStatusRepository serviceStatusRepository) {
-        this.serviceStatusRepository = serviceStatusRepository;
-    }
-    @Autowired
-    public void setCustomerServiceRepository(CustomerServiceRepository customerServiceRepository) {
-        this.customerServiceRepository = customerServiceRepository;
-    }
 
 
     // Methods
+    @Override
     public Customer findCustomerByPhoneNumber(String phoneNumber) {
         return customerRepository.findCustomerByPhoneNumber(phoneNumber);
     }
 
+
+    @Override
     public List<Customer> findCustomersForUser(String login) {
         return customerRepository.findCustomersByUserLogin(login);
     }
 
-    public void saveCustomer(Customer customer) {
-        customer.setUser(userRepository.findUserByLogin(customer.getUser().getLogin()));
-        customerRepository.save(customer);
+
+    @Override
+    public List<Customer> findCustomersLikePhoneNumber(String phoneNumber) {
+        return customerRepository.findCustomersByPhoneNumberContaining(phoneNumber);
     }
 
 
-    public boolean updateCustomer(String userLogin, String phoneNumber, String customerStatusName, float balance) {
-        System.out.println(userLogin + phoneNumber + customerStatusName + balance);
-        User user = userRepository.findUserByLogin(userLogin);
+    @Override
+    public Customer saveCustomer(CustomerDTO customerDTO) {
+        User user = userRepository.findUserByLogin(customerDTO.getUserLogin());
+        CustomerStatus customerStatus = customerStatusRepository.findCustomerStatusByName(customerDTO.getCustomerStatusName());
+        Customer customer = new Customer(customerDTO, user, customerStatus);
+        return customerRepository.save(customer);
+    }
+
+
+    @Override
+//    public boolean updateCustomer(String userLogin, String phoneNumber, String customerStatusName, float balance) {
+    public Customer updateCustomer(CustomerDTO newDtoCustomer) {
+        System.out.println(newDtoCustomer.getUserLogin() + newDtoCustomer.getPhoneNumber() + newDtoCustomer.getCustomerStatusName() + newDtoCustomer.getBalance());
+        User user = userRepository.findUserByLogin(newDtoCustomer.getUserLogin());
         System.out.println("2");
-        CustomerStatus customerStatus = customerStatusRepository.findCustomerStatusByName(customerStatusName);
+        CustomerStatus customerStatus = customerStatusRepository.findCustomerStatusByName(newDtoCustomer.getCustomerStatusName());
         System.out.println("3");
-        Customer customerDB = customerRepository.findCustomerByPhoneNumber(phoneNumber);
+        Customer customerDB = customerRepository.findCustomerByPhoneNumber(newDtoCustomer.getPhoneNumber());
 
         if (customerDB.getUser() == null && user != null) {
             customerDB.setUser(user);
             user.getCustomerList().add(customerDB);
 
-        }else if ( !userLogin.equals(customerDB.getUser().getLogin())) {
+        }else if ( !newDtoCustomer.getUserLogin().equals(customerDB.getUser().getLogin())) {
 //            System.out.println("If UL");
             User oldUser = customerDB.getUser();
             oldUser.getCustomerList().remove(customerDB);
@@ -96,7 +96,7 @@ public class CustomerServiceImpl {
         if (customerDB.getCustomerStatus() == null && customerStatus != null) {
             customerDB.setCustomerStatus(customerStatus);
             customerStatus.getCustomerList().add(customerDB);
-        } else if (!customerStatusName.equals(customerDB.getCustomerStatus().getName())) {
+        } else if (!newDtoCustomer.getCustomerStatusName().equals(customerDB.getCustomerStatus().getName())) {
 //            System.out.println("If CuSt");
             CustomerStatus oldCustomerStatus = customerDB.getCustomerStatus();
             oldCustomerStatus.getCustomerList().remove(customerDB);
@@ -112,18 +112,17 @@ public class CustomerServiceImpl {
             customerStatusRepository.save(oldCustomerStatus);
         }
 
+        if (!newDtoCustomer.getBillingAddress().equals(customerDB.getBillingAddress())) {
+            customerDB.setBillingAddress(newDtoCustomer.getBillingAddress());
+        }
 
-        customerDB.setBalance(balance);
-//        System.out.println("updateCostumer: 1");
-//        System.out.println(customerDB);
-        customerRepository.save(customerDB);
-//        dao.updateEntity(user);
-//        System.out.println("updateCostumer: 2");
+        customerDB.setBalance(newDtoCustomer.getBalance());
 
-        return true;
+        return customerRepository.save(customerDB);
     }
 
 
+    @Override
 //    public boolean deleteCustomer(User user, String customerPhoneNumber) {
     public boolean deleteCustomer(String customerPhoneNumber) {
 //        System.out.println(1);
@@ -154,45 +153,13 @@ public class CustomerServiceImpl {
         customerRepository.delete(customerTemp);
         System.out.println(8);
 
-////        customer.getCustomerServiceList().clear();
+////        customer.getCustomerServiceSet().clear();
 ////        dao.updateEntity(customer);
 //        System.out.println(6);
         return true;
     }
 
 
-    public void addCustomerService(String selectedPhoneNumber, String selectedServiceName) {
-        Customer selectedCustomer = customerRepository.findCustomerByPhoneNumber(selectedPhoneNumber);
-        com.infoPulse.lessons.model.entity.Service selectedService = serviceRepository.findServiceByName(selectedServiceName);
-        ServiceStatus serviceStatus = serviceStatusRepository.findServiceStatusByName("disabled");
-//        dao.addEntity(selectedCustomer.addService(selectedService, serviceStatus));
-        selectedCustomer.addService(selectedService, serviceStatus);
-        customerRepository.save(selectedCustomer);
-
-//        dao.updateEntity(selectedService);
-    }
-
-
-    public void deleteCustomerService(String phoneNumber, String serviceName) {
-        System.out.println("/customerservice/{phonenumber}/{servicename}/delete: " + phoneNumber + "|" + serviceName);
-//        CustomerService customerService = dao.getCustomerServicesByPhoneNumberAndServiceName(phoneNumber, serviceName);
-        CustomerService customerService = customerServiceRepository.findCustomerServiceByCustomerPhoneNumberAndServiceName(phoneNumber, serviceName);
-        customerServiceRepository.delete(customerService);
-
-//        Customer customer = dao.findCustomerByPhoneNumber(phoneNumber);
-//        Customer customer = customerRepository.findCustomerByPhoneNumber(phoneNumber);
-//        com.infoPulse.lessons.classesForTable.Service service = dao.getServiceForName(serviceName);
-//        System.out.println("Before:\n" + customer.getCustomerServiceList().size() + "|" + service.getCustomerServiceList().size());
-//        System.out.println("Before:\n" + customer.getCustomerServiceList().size() + "|" + service.getCustomerServiceList().size());
-//        customer.removeService(service);
-//        dao.updateEntity(customer);
-//        dao.updateEntity(service);
-//        System.out.println("After:\n" + customer.getCustomerServiceList().size() + "|" + service.getCustomerServiceList().size());
-//        System.out.println("After:\n" + customer.getCustomerServiceList().size() + "|" + service.getCustomerServiceList().size());
-//
-//        System.out.println("Delete CustomerService id: " + customerService.getId());
-//        dao.deleteEntity(customerService);
-    }
 
 
 }

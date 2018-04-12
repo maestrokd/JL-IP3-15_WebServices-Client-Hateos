@@ -13,14 +13,11 @@ import org.springframework.stereotype.Service;
 import java.util.List;
 
 @Service
-public class RoleServiceImpl {
+public class RoleServiceImpl implements RoleService {
 
     // Fields
     private UserRepository userRepository;
     private RoleRepository roleRepository;
-
-    private VerificationTokenRepository verificationTokenRepository;
-    private PasswordEncoder passwordEncoder;
 
 
     // Setters
@@ -35,18 +32,11 @@ public class RoleServiceImpl {
     }
 
 
-
-
     // Methods
-
     public List<Role> findAll() {
         List<Role> roleList = roleRepository.findAll();
         System.out.println("RoleService.findAll: " + roleList);
         return roleList;
     }
-
-
-
-
 
 }

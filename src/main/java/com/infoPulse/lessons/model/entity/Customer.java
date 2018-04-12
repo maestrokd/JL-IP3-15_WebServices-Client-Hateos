@@ -1,21 +1,13 @@
 package com.infoPulse.lessons.model.entity;
 
-
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-//import com.infoPulse.lessons.daoTools.Dao;
+import com.infoPulse.lessons.model.dto.CustomerDTO;
 
 import javax.persistence.*;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
-//@Component
 @Entity
 @Table(name = "customer")
-
-//@Cacheable
-//@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.TRANSACTIONAL)
-
 public class Customer {
 
     // Fields
@@ -24,27 +16,22 @@ public class Customer {
     @Column
     private int id;
 
-
     @Column(name = "phone_number", length = 25)
     private String phoneNumber = null;
-
 
     @Column(name = "billing_address")
     private String billingAddress;
 
-
+    @JsonManagedReference
     @ManyToOne
     @JoinColumn(name = "customer_status_id", foreignKey = @ForeignKey(name = "fk_customer_status_customer"))
     private CustomerStatus customerStatus;
 
-
     @Column(name = "activated_date")
     private Date activatedDate;
 
-
     @Column(name = "deactivated_date")
     private Date deactivatedDate;
-
 
     @Column(name = "balance")
     private float balance;
@@ -54,34 +41,8 @@ public class Customer {
     private User user;
 
     @OneToMany(mappedBy = "customer", cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true, fetch = FetchType.EAGER)
-    private List<CustomerService> customerServiceList = new ArrayList<>();
+    private Set<CustomerService> customerServiceSet = new HashSet<>();
 
-    public  CustomerService addService(Service service, ServiceStatus serviceStatus) {
-        System.out.println("Add Service");
-        CustomerService customerService = new CustomerService();
-        customerService.setCustomer(this);
-        customerService.setService(service);
-        customerService.setServiceStatus(serviceStatus);
-        customerServiceList.add(customerService);
-        service.getCustomerServiceList().add(customerService);
-        return customerService;
-    }
-
-    public void removeService(Service service) {
-        CustomerService customerServiceTemp = null;
-        for (CustomerService customerService : customerServiceList) {
-            if (service.getName().equals(customerService.getService().getName())) {
-                customerServiceTemp = customerService;
-                break;
-            }
-        }
-        if (customerServiceTemp == null) {
-            return;
-        } else {
-            customerServiceList.remove(customerServiceTemp);
-            service.getCustomerServiceList().remove(customerServiceTemp);
-        }
-    }
 
 //    @ManyToMany
 //    @JoinTable(name = "cus_ser",
@@ -93,15 +54,15 @@ public class Customer {
     @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true, mappedBy = "customer")
     private Set<Event> eventList = new HashSet<>();
 
-    public void addEvent(Service service) {
-        Event event = new Event();
-        event.setCustomer(this);
-        event.setService(service);
-        event.setDate(new Date());
-        event.setCost(service.getPayroll());
-        eventList.add(event);
-        service.getEventList().add(event);
-    }
+//    public void addEvent(Service service) {
+//        Event event = new Event();
+//        event.setCustomer(this);
+//        event.setService(service);
+//        event.setDate(new Date());
+//        event.setCost(service.getPayroll());
+//        eventList.add(event);
+//        service.getEventList().add(event);
+//    }
 
 
     @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true, mappedBy = "customer")
@@ -137,9 +98,19 @@ public class Customer {
     // Constructors
     public Customer() {}
 
+    public Customer(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public Customer(CustomerDTO customerDTO, User user, CustomerStatus customerStatus) {
+        this.phoneNumber = customerDTO.getPhoneNumber();
+        this.billingAddress = customerDTO.getBillingAddress();
+        this.customerStatus = customerStatus;
+        this.balance = customerDTO.getBalance();
+        this.user = user;
+    }
 
     // Getters and Setters
-
     public int getId() {
         return id;
     }
@@ -148,8 +119,6 @@ public class Customer {
         this.id = id;
     }
 
-
-
     public String getPhoneNumber() {
         return phoneNumber;
     }
@@ -157,7 +126,6 @@ public class Customer {
     public void setPhoneNumber(String phoneNumber) {
         this.phoneNumber = phoneNumber;
     }
-
 
     public String getBillingAddress() {
         return billingAddress;
@@ -207,12 +175,12 @@ public class Customer {
         this.user = user;
     }
 
-    public List<CustomerService> getCustomerServiceList() {
-        return customerServiceList;
+    public Set<CustomerService> getCustomerServiceSet() {
+        return customerServiceSet;
     }
 
-    public void setCustomerServiceList(List<CustomerService> customerServiceList) {
-        this.customerServiceList = customerServiceList;
+    public void setCustomerServiceSet(Set<CustomerService> customerServiceSet) {
+        this.customerServiceSet = customerServiceSet;
     }
 
     public Set<Event> getEventList() {
@@ -241,7 +209,6 @@ public class Customer {
 
 
     // Methods
-
     @Override
     public String toString() {
         return "Customer{" +
@@ -250,12 +217,13 @@ public class Customer {
                 ", balance=" + balance +
 //                ", user=" + user.getLogin() +
                 ", hash=" + this.hashCode() +
-//                ", customerServiceList=" + customerServiceList +
+//                ", customerServiceSet=" + customerServiceSet +
                // ", eventList=" + eventList +
 //                ", billList=" + billList +
 //                ", paymentList=" + paymentList +
                 '}';
     }
+
 
     @Override
     public int hashCode() {
@@ -265,6 +233,7 @@ public class Customer {
         result = prime * result + ((phoneNumber == null) ? 0 : phoneNumber.hashCode());
         return result;
     }
+
 
     @Override
     public boolean equals(Object obj) {

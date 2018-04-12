@@ -11,8 +11,8 @@
 <%@ taglib prefix="sf" uri="http://www.springframework.org/tags/form" %>
 <html>
 <head>
-    <%--<script type="text/javascript" src="../../resources/static/js/paymentspager.js"></script>--%>
-    <script type="text/javascript" src="../../resources/static/js/pager.js"></script>
+    <script type="text/javascript" src="../../resources/static/js/paymentspager.js"></script>
+    <%--<script type="text/javascript" src="../../resources/static/js/pager.js"></script>--%>
 
     <title>All Payments List</title>
 

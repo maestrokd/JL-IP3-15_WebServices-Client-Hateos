@@ -19,10 +19,9 @@ import java.util.List;
 import java.util.Set;
 
 @Service
-public class UserServiceImpl {
+public class UserServiceImpl implements UserService {
 
     // Fields
-
     private UserRepository userRepository;
     private RoleRepository roleRepository;
 
@@ -56,18 +55,22 @@ public class UserServiceImpl {
     }
 
 
-
     // Methods
+//    @Override
     public void addUser(User user) {
         userRepository.save(user);
     }
 
+
+    @Override
     public List<User> findAll() {
         List<User> userList = userRepository.findAll();
         System.out.println(userList);
         return userList;
     }
 
+
+    @Override
     public boolean isUserExist(String login) {
         User user = userRepository.findUserByLogin(login);
         if (user != null) {
@@ -76,20 +79,28 @@ public class UserServiceImpl {
         return false;
     }
 
+
+    @Override
     public User findUserByLogin(String login) {
         return userRepository.findUserByLogin(login);
     }
 
+
+    @Override
     public void updateUser(User user) {
         userRepository.saveAndFlush(user);
     }
 
+
+    @Override
     public void updateRoles(String login, Set<Role> roleSet) {
         User user = userRepository.findUserByLogin(login);
         user.setRoleList(roleSet);
         userRepository.saveAndFlush(user);
     }
 
+
+    @Override
     public void deleteUser(String userLogin) {
         logger.error("deleteUser 1");
         User user = userRepository.findUserByLogin(userLogin);
@@ -103,6 +114,8 @@ public class UserServiceImpl {
         logger.error("deleteUser 5");
     }
 
+
+    @Override
     public User registerNewUserAccount(UserDto userDto) {
 
         if (emailExist(userDto.getEmail())) {
@@ -133,12 +146,14 @@ public class UserServiceImpl {
     }
 
 
+    @Override
     public void createVerificationToken(User user, String token) {
         VerificationToken verificationToken = new VerificationToken(token, user);
         verificationTokenRepository.save(verificationToken);
     }
 
 
+    @Override
     public VerificationToken getVerificationToken(String token) {
         return verificationTokenRepository.findVerificationTokenByToken(token);
     }

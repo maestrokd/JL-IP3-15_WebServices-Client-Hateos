@@ -1,6 +1,6 @@
-package com.infoPulse.lessons.core.registration.validation.validators;
+package com.infoPulse.lessons.validators.userRegistrationFormValidator.validators;
 
-import com.infoPulse.lessons.core.registration.validation.annotations.ValidEmail;
+import com.infoPulse.lessons.validators.userRegistrationFormValidator.annotations.ValidEmail;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;

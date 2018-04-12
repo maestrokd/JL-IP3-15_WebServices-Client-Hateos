@@ -4,7 +4,7 @@ import com.infoPulse.lessons.model.dto.UserDto;
 import com.infoPulse.lessons.model.entity.User;
 import com.infoPulse.lessons.model.entity.VerificationToken;
 import com.infoPulse.lessons.core.registration.events.OnRegistrationCompleteEvent;
-import com.infoPulse.lessons.model.service.UserServiceImpl;
+import com.infoPulse.lessons.model.service.UserService;
 import com.infoPulse.lessons.model.service.VerificationTokenServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -22,16 +22,22 @@ import java.util.Locale;
 public class RegistrationController {
 
     // Fields
-    @Autowired
-    ApplicationEventPublisher applicationEventPublisher;
+    private UserService userService;
 
-    @Autowired
-    UserServiceImpl userServiceImpl;
     @Autowired
     VerificationTokenServiceImpl verificationTokenService;
 
     @Autowired
+    ApplicationEventPublisher applicationEventPublisher;
+    @Autowired
     private MessageSource messageSource;
+
+
+    //Getters and Setters
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
 
 
     // Methods
@@ -65,13 +71,13 @@ public class RegistrationController {
             return new ModelAndView("all/users/userregistrationform", "userDto", userDto);
         }
 
-//        if (userServiceImpl.isUserExist(userDto.getLogin())) {
+//        if (userService.isUserExist(userDto.getLogin())) {
 //            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 //            bindingResult.rejectValue("login", "error.loginExists");
 //            return new ModelAndView("all/users/userregistrationform", "userDto", userDto);
 //        }
 
-        User registeredUser = userServiceImpl.registerNewUserAccount(userDto);
+        User registeredUser = userService.registerNewUserAccount(userDto);
 
         if (registeredUser == null) {
             bindingResult.rejectValue("email", "message.regError");
@@ -93,7 +99,7 @@ public class RegistrationController {
             , @RequestParam("token") String token
     ){
         Locale locale = webRequest.getLocale();
-        VerificationToken verificationToken = userServiceImpl.getVerificationToken(token);
+        VerificationToken verificationToken = userService.getVerificationToken(token);
         if (verificationToken == null) {
             String message = messageSource.getMessage("auth.message.invalidToken", null, locale);
             return new ModelAndView("newlogin", "customMessage", message);
@@ -106,7 +112,7 @@ public class RegistrationController {
             return new ModelAndView("newlogin", "customMessage", messageValue);
         }
         user.setEnabled(true);
-        userServiceImpl.updateUser(user);
+        userService.updateUser(user);
         verificationTokenService.deleteVerificationToken(verificationToken);
         return new ModelAndView("newlogin", "customMessage", "User was registered");
     }

@@ -1,23 +1,17 @@
 package com.infoPulse.lessons.model.service;
 
-import com.infoPulse.lessons.model.entity.Customer;
 import com.infoPulse.lessons.model.entity.CustomerStatus;
-import com.infoPulse.lessons.model.repository.CustomerRepository;
 import com.infoPulse.lessons.model.repository.CustomerStatusRepository;
-import com.infoPulse.lessons.model.repository.UserRepository;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 
 @Service
-public class CustomerStatusServiceImpl {
+public class CustomerStatusServiceImpl implements CustomerStatusService {
 
     // Fields
-
-        private CustomerStatusRepository customerStatusRepository;
-
+    private CustomerStatusRepository customerStatusRepository;
 
     @Autowired
     Logger logger;
@@ -31,12 +25,9 @@ public class CustomerStatusServiceImpl {
 
 
     // Methods
+    @Override
     public List<CustomerStatus> findAll() {
         return customerStatusRepository.findAll();
     }
-
-
-
-
 
 }

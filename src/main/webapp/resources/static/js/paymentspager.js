@@ -4,11 +4,15 @@ function loadPayments(page, size) {
     var csrfHeader = $("meta[name='_csrf_header']").attr("content");
     var headers = {};
     headers[csrfHeader] = csrfToken;
+    headers["Authorization"]="Basic " + btoa("user" + ":" + "user")
 
+    //DB Server -> Model -> Application Server -> View <- Controller <- Front
+//MVVM user-> REST/SOAP Application Programming Interface client->server->DB
     $.ajax({
         type: "GET",
         contentType: "application/json",
-        url: "http://localhost:8090/api/paymentz?page=" + page + "&size=" + size,
+        // url: "/getallpaymentjs?page=" + page + "&size=" + size,
+        url: "http://localhost:8090/api/paymentz?page="+page+"&size="+size,
         headers: headers,
         dataType: 'json',
         timeout: 100000,
@@ -30,6 +34,7 @@ function loadPayments(page, size) {
             var pageNumber = data['number'];
             var totalPages = data['totalPages'];
 
+
             var first = "<button type='button' class='btn btn-success' onclick='replace(0," + data['size'] + ")'" + ">First</button>";
             $("#div1").append(first);
 
@@ -40,6 +45,7 @@ function loadPayments(page, size) {
             if (pageNumber < totalPages -1) {
                 var next = "<button type='button' class='btn btn-primary' onclick='replace("
                     + (pageNumber + 1) + ", " + data['size'] + ")'" + ">Next</button>";
+
                 $("#div1").append(next);
             }
             var last = "<button type='button' class='btn btn-success' onclick='replace(" + (totalPages - 1) + ", " + data['size'] + ")'" + ">Last</button>";
@@ -55,9 +61,14 @@ function loadPayments(page, size) {
         }
     });
 
-    function replace(page, size) {
-        location.replace("http://localhost:8090/paymentz?page=" + page + "&size=" + size);
-        return false;
-    }
 
+}
+
+function replace(page, size) {
+    console.log("page" + page);
+    console.log("size" + size);
+
+    // location.replace("http://localhost:8090/api/paymentz?page=" + page + "&size=" + size);
+    location.replace("/getallpayments?page=" + page + "&size=" + size);
+    return false;
 }

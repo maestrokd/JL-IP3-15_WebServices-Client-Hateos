@@ -25,7 +25,7 @@
                     <div class="form-group">
                         <label class="control-label col-sm-2" for="customer.phoneNumber">Enter phone number:</label>
                         <div class="col-sm-4">
-                            <sf:input class="form-control" path ="customer.phoneNumber" value = "${phoneNumber}" />
+                            <sf:input class="form-control" path="customer.phoneNumber" value="${phoneNumber}" readonly="true" />
                             <sf:errors path="customer.phoneNumber" class="text-danger"/>
                         </div>
                     </div>

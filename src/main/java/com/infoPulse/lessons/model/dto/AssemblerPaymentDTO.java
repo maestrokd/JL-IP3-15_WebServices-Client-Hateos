@@ -1,24 +1,20 @@
 package com.infoPulse.lessons.model.dto;
 
-
-
 import com.infoPulse.lessons.model.entity.Payment;
 
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * @author Danny Briskin (sql.coach.kiev@gmail.com)
- */
-public class Assembler {
 
-    private static volatile Assembler instance;
+public class AssemblerPaymentDTO {
 
-    public static Assembler getInstance() {
+    private static volatile AssemblerPaymentDTO instance;
+
+    public static AssemblerPaymentDTO getInstance() {
         if (instance == null) {
-            synchronized (Assembler.class) {
+            synchronized (AssemblerPaymentDTO.class) {
                 if (instance == null) {
-                    instance = new Assembler();
+                    instance = new AssemblerPaymentDTO();
                 }
             }
         }

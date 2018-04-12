@@ -11,14 +11,15 @@ function loadPayments(page, size) {
 
     // add CSRF protection headers
     headers[csrfHeader] = csrfToken;
-
+    headers["Authorization"]="Basic " + btoa("user" + ":" + "user")
+//controller/action/params
     $.ajax({
         type: "GET",
         contentType: "application/json",
         url: "http://localhost:8090/api/paymentz?page="+page+"&size="+size,
         headers: headers,
         // data: data,
-        // crossDomain: true,
+       // crossDomain: true,
         dataType: 'json',
         timeout: 100000,
         success: function (data) {

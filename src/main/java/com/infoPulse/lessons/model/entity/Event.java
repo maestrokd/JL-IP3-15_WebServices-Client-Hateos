@@ -1,5 +1,7 @@
 package com.infoPulse.lessons.model.entity;
 
+import org.hibernate.annotations.CreationTimestamp;
+
 import javax.persistence.*;
 import java.io.Serializable;
 import java.util.Date;
@@ -19,28 +21,26 @@ public class Event implements Serializable {
     @Column(name = "id")
     private int id;
 
-
-//    @Id
     @ManyToOne
 //    @JoinColumn(name = "customer_id", foreignKey = @ForeignKey(name = "fk_customer_customer_services"))
     private Customer customer;
 
-//    @Id
     @ManyToOne
 //    @JoinColumn(name = "service_id", foreignKey = @ForeignKey(name = "fk_service_customer_services"))
     private Service service;
 
-//    @Id
-    @Column(name = "date")
-    private Date date;
+    @CreationTimestamp
+    @Column(name = "start_date")
+    private Date startDate;
 
+    @Column(name = "duration")
+    private int duration;
 
     @Column(name = "cost")
     private float cost;
 
 
     // Getters and Setters
-
     public int getId() {
         return id;
     }
@@ -65,12 +65,20 @@ public class Event implements Serializable {
         this.service = service;
     }
 
-    public Date getDate() {
-        return date;
+    public Date getStartDate() {
+        return startDate;
     }
 
-    public void setDate(Date date) {
-        this.date = date;
+    public void setStartDate(Date startDate) {
+        this.startDate = startDate;
+    }
+
+    public int getDuration() {
+        return duration;
+    }
+
+    public void setDuration(int duration) {
+        this.duration = duration;
     }
 
     public float getCost() {

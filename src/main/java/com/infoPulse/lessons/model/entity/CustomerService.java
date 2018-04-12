@@ -32,6 +32,11 @@ public class CustomerService implements Serializable {
     public CustomerService() {
     }
 
+    public CustomerService(String phoneNumber, String serviceName) {
+        this.customer = new Customer(phoneNumber);
+        this.service = new Service(serviceName);
+    }
+
 
     // Getters and Setters
     public int getId() {
@@ -64,5 +69,24 @@ public class CustomerService implements Serializable {
 
     public void setServiceStatus(ServiceStatus serviceStatus) {
         this.serviceStatus = serviceStatus;
+    }
+
+
+    // Methods
+
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        CustomerService that = (CustomerService) o;
+
+        return service != null ? service.equals(that.service) : that.service == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return service != null ? service.hashCode() : 0;
     }
 }

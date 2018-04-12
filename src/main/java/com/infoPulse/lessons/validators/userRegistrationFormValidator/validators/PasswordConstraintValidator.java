@@ -1,8 +1,8 @@
-package com.infoPulse.lessons.core.registration.validation.validators;
+package com.infoPulse.lessons.validators.userRegistrationFormValidator.validators;
 
 
 import com.google.common.base.Joiner;
-import com.infoPulse.lessons.core.registration.validation.annotations.ValidPassword;
+import com.infoPulse.lessons.validators.userRegistrationFormValidator.annotations.ValidPassword;
 import com.infoPulse.lessons.model.service.UserServiceImpl;
 import org.passay.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -33,7 +33,7 @@ public class PasswordConstraintValidator implements ConstraintValidator<ValidPas
                 new LengthRule(8, 30)
                 , new UppercaseCharacterRule(1)
                 , new DigitCharacterRule(1)
-                , new SpecialCharacterRule(1)
+//                , new SpecialCharacterRule(1)
                 , new WhitespaceRule()));
 
         final RuleResult result = passwordValidator.validate(new PasswordData(password));

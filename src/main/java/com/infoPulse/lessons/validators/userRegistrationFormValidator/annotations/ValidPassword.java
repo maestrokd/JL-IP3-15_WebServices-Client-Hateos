@@ -1,7 +1,7 @@
-package com.infoPulse.lessons.core.registration.validation.annotations;
+package com.infoPulse.lessons.validators.userRegistrationFormValidator.annotations;
 
 
-import com.infoPulse.lessons.core.registration.validation.validators.LoginValidator;
+import com.infoPulse.lessons.validators.userRegistrationFormValidator.validators.PasswordConstraintValidator;
 
 import javax.validation.Constraint;
 import javax.validation.Payload;
@@ -14,11 +14,11 @@ import static java.lang.annotation.ElementType.*;
 
 @Target({TYPE, FIELD, ANNOTATION_TYPE})
 @Retention(RetentionPolicy.RUNTIME)
-@Constraint(validatedBy = LoginValidator.class)
+@Constraint(validatedBy = PasswordConstraintValidator.class)
 @Documented
-public @interface ValidLogin {
+public @interface ValidPassword {
 
-    String message() default "{error.enterInvalidLogin}";
+    String message() default "{error.enterInvalidPassword}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 }

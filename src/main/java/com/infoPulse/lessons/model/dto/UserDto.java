@@ -1,8 +1,8 @@
 package com.infoPulse.lessons.model.dto;
 
-import com.infoPulse.lessons.core.registration.validation.annotations.ValidEmail;
-import com.infoPulse.lessons.core.registration.validation.annotations.ValidLogin;
-import com.infoPulse.lessons.core.registration.validation.annotations.ValidPassword;
+import com.infoPulse.lessons.validators.userRegistrationFormValidator.annotations.ValidEmail;
+import com.infoPulse.lessons.validators.userRegistrationFormValidator.annotations.ValidLogin;
+import com.infoPulse.lessons.validators.userRegistrationFormValidator.annotations.ValidPassword;
 
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;

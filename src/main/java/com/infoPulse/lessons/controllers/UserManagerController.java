@@ -2,9 +2,9 @@ package com.infoPulse.lessons.controllers;
 
 import com.infoPulse.lessons.model.entity.Customer;
 import com.infoPulse.lessons.model.entity.User;
-import com.infoPulse.lessons.model.service.CustomerServiceImpl;
-import com.infoPulse.lessons.model.service.RoleServiceImpl;
-import com.infoPulse.lessons.model.service.UserServiceImpl;
+import com.infoPulse.lessons.model.service.CustomerService;
+import com.infoPulse.lessons.model.service.RoleService;
+import com.infoPulse.lessons.model.service.UserService;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -18,26 +18,37 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.util.List;
 
-/**
- * @author Danny Briskin (sql.coach.kiev@gmail.com)
- *         on  14.07.2017 for spingSecurityAdv project.
- */
 
 @RestController
 public class UserManagerController {
 
-    @Autowired
-    UserServiceImpl userServiceImpl;
-    @Autowired
-    RoleServiceImpl roleServiceImpl;
-    @Autowired
-    CustomerServiceImpl customerServiceImpl;
+    // Fields
+    private UserService userService;
+    private RoleService roleService;
+    private CustomerService customerService;
 
     @Autowired
     Logger logger;
 
 
+    // Getters and Setters
+    @Autowired
+    public void setUserService(UserService userService) {
+        this.userService = userService;
+    }
 
+    @Autowired
+    public void setRoleService(RoleService roleService) {
+        this.roleService = roleService;
+    }
+
+    @Autowired
+    public void setCustomerService(CustomerService customerService) {
+        this.customerService = customerService;
+    }
+
+
+    // Methods
     @RequestMapping(value = "/newlogin", method = RequestMethod.GET)
     public ModelAndView getLogin() {
         ModelAndView modelAndView = new ModelAndView();
@@ -60,7 +71,10 @@ public class UserManagerController {
 
         ModelAndView modelAndView = new ModelAndView();
 
-        List<Customer> customerList = customerServiceImpl.findCustomersForUser(auth.getName());
+        User user = userService.findUserByLogin(auth.getName());
+        modelAndView.addObject("selectedUser", user);
+
+        List<Customer> customerList = customerService.findCustomersForUser(auth.getName());
         modelAndView.addObject("customerList", customerList);
 
         Customer customer = new Customer();
@@ -79,10 +93,10 @@ public class UserManagerController {
 
         ModelAndView modelAndView = new ModelAndView();
 
-        User user = userServiceImpl.findUserByLogin(login);
+        User user = userService.findUserByLogin(login);
         modelAndView.addObject("selectedUser", user);
 
-        List<Customer> customerList = customerServiceImpl.findCustomersForUser(login);
+        List<Customer> customerList = customerService.findCustomersForUser(login);
         modelAndView.addObject("customerList", customerList);
 
         Customer customer = new Customer();
@@ -116,7 +130,7 @@ public class UserManagerController {
 //        System.out.println(auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER")));
 //        System.out.println(auth.getAuthorities().contains("ROLE_ADMIN"));
 
-        modelAndView.addObject("userList", userServiceImpl.findAll());
+        modelAndView.addObject("userList", userService.findAll());
         modelAndView.setViewName("protected/users/userlist");
         return modelAndView;
     }
@@ -132,11 +146,11 @@ public class UserManagerController {
         // If user has role ROLE_ADMIN
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
-            modelAndView.addObject("roleList", roleServiceImpl.findAll());
-            System.out.println("Contoller.showUpdateUserForm roleServiceImpl.findAll() : " + roleServiceImpl.findAll());
+            modelAndView.addObject("roleList", roleService.findAll());
+            System.out.println("Contoller.showUpdateUserForm roleService.findAll() : " + roleService.findAll());
         }
 
-        modelAndView.addObject("updateUser", userServiceImpl.findUserByLogin(login));
+        modelAndView.addObject("updateUser", userService.findUserByLogin(login));
         modelAndView.setViewName("protected/users/userupdateform");
         return modelAndView;
     }
@@ -154,12 +168,12 @@ public class UserManagerController {
     ) {
 
         try {
-        userServiceImpl.updateRoles(login, user.getRoleList());
+        userService.updateRoles(login, user.getRoleList());
         } catch (Exception e) {
-            redirectAttributes.addFlashAttribute("customMessage2", "User update was failed with ");
+            redirectAttributes.addFlashAttribute("message", "User update was failed with ");
             return new ModelAndView("redirect:/protected/users/userlist");
         }
-        redirectAttributes.addFlashAttribute("customMessage2", "User updated successfully ");
+        redirectAttributes.addFlashAttribute("message", "User updated successfully ");
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("redirect:/protected/users/userlist");
         return modelAndView;
@@ -172,8 +186,8 @@ public class UserManagerController {
             ,@PathVariable("login")
                     String login
     ) {
-        userServiceImpl.deleteUser(login);
-        redirectAttributes.addFlashAttribute("customMessage2", "User was deleted ");
+        userService.deleteUser(login);
+        redirectAttributes.addFlashAttribute("message", "User was deleted ");
         return new ModelAndView("redirect:/protected/users/userlist");
     }
 

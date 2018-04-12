@@ -55,6 +55,10 @@ public class PaymentDTO {
     }
 
 
+    public void setDate(String date) {
+        this.date = date;
+    }
+
     public String getChannel() {
         return channel;
     }
@@ -62,7 +66,8 @@ public class PaymentDTO {
     @Override
     public String toString() {
         return "PaymentDTO{" +
-                "customerId=" + customerId +
+                "paymentId=" + paymentId +
+                " customerId=" + customerId +
                 ", amount=" + amount +
                 ", date='" + date + '\'' +
                 ", channel='" + channel + '\'' +

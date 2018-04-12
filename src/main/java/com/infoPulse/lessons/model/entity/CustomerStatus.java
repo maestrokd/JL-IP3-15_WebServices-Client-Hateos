@@ -1,5 +1,7 @@
 package com.infoPulse.lessons.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import javax.persistence.*;
 import java.util.HashSet;
 import java.util.Set;
@@ -18,6 +20,7 @@ public class CustomerStatus {
     @Column(name = "name")
     private String name = "deactive";
 
+    @JsonBackReference
     @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true, mappedBy = "customerStatus", fetch = FetchType.EAGER)
     private Set<Customer> customerList = new HashSet<>();
 

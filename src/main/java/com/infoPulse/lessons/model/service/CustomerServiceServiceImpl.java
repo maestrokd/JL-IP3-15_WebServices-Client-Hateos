@@ -1,9 +1,12 @@
 package com.infoPulse.lessons.model.service;
 
 
+import com.infoPulse.lessons.model.entity.Customer;
 import com.infoPulse.lessons.model.entity.CustomerService;
 import com.infoPulse.lessons.model.entity.ServiceStatus;
+import com.infoPulse.lessons.model.repository.CustomerRepository;
 import com.infoPulse.lessons.model.repository.CustomerServiceRepository;
+import com.infoPulse.lessons.model.repository.ServiceRepository;
 import com.infoPulse.lessons.model.repository.ServiceStatusRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -12,29 +15,48 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-public class CustomerServiceServiceImpl {
+public class CustomerServiceServiceImpl implements CustomerServiceService {
 
-    private CustomerServiceRepository repository;
+    // Fields
+    private CustomerServiceRepository customerServiceRepository;
+    private ServiceRepository serviceRepository;
+    private ServiceStatusRepository serviceStatusRepository;
+    private CustomerRepository customerRepository;
 
+
+    // Getters and Setters
     @Autowired
-    public void setCustomerServiceRepository(CustomerServiceRepository repository) {
-        this.repository = repository;
+    public void setCustomerServiceRepository(CustomerServiceRepository customerServiceRepository) {
+        this.customerServiceRepository = customerServiceRepository;
     }
 
-    private ServiceStatusRepository serviceStatusRepository;
+    @Autowired
+    public void setServiceRepository(ServiceRepository serviceRepository) {
+        this.serviceRepository = serviceRepository;
+    }
 
     @Autowired
     public void setServiceStatusRepository(ServiceStatusRepository serviceStatusRepository) {
         this.serviceStatusRepository = serviceStatusRepository;
     }
 
-    public List<CustomerService> findCustomerServicesForCustomer(String phoneNumber) {
-        return repository.findCustomerServicesByCustomerPhoneNumber(phoneNumber);
+    @Autowired
+    public void setCustomerRepository(CustomerRepository customerRepository) {
+        this.customerRepository = customerRepository;
     }
 
+
+    // Methods
+    @Override
+    public List<CustomerService> findCustomerServicesForCustomer(String phoneNumber) {
+        return customerServiceRepository.findCustomerServicesByCustomerPhoneNumber(phoneNumber);
+    }
+
+
     @Transactional
+    @Override
     public void changeTheStatus(String phoneNumber, String serviceName) {
-        CustomerService customerService = repository.findCustomerServiceByCustomerPhoneNumberAndServiceName(phoneNumber, serviceName);
+        CustomerService customerService = customerServiceRepository.findCustomerServiceByCustomerPhoneNumberAndServiceName(phoneNumber, serviceName);
         List<ServiceStatus> serviceStatusList = serviceStatusRepository.findAll();
         if (customerService.getServiceStatus().equals(serviceStatusList.get(0))) {
             serviceStatusList.get(0).getCustomerServiceList().remove(customerService);
@@ -45,7 +67,40 @@ public class CustomerServiceServiceImpl {
             customerService.setServiceStatus(serviceStatusList.get(0));
             serviceStatusList.get(0).getCustomerServiceList().add(customerService);
         }
-        repository.save(customerService);
+        customerServiceRepository.save(customerService);
     }
 
+
+    @Override
+    public CustomerService addCustomerService(CustomerService customerService) {
+
+        Customer selectedCustomer = customerRepository.findCustomerByPhoneNumber(customerService.getCustomer().getPhoneNumber());
+        com.infoPulse.lessons.model.entity.Service selectedService = serviceRepository.findServiceByName(customerService.getService().getName());
+        ServiceStatus serviceStatus = serviceStatusRepository.findServiceStatusByName("disabled");
+
+
+        CustomerService newCustomerService = new CustomerService();
+        newCustomerService.setCustomer(selectedCustomer);
+        newCustomerService.setService(selectedService);
+        newCustomerService.setServiceStatus(serviceStatus);
+
+        if (selectedCustomer.getCustomerServiceSet().contains(newCustomerService)) {
+            return null;
+        }
+
+        selectedCustomer.getCustomerServiceSet().add(customerService);
+        selectedService.getCustomerServiceList().add(customerService);
+
+//        selectedCustomer.addService(selectedService, serviceStatus);
+//        customerRepository.save(selectedCustomer);
+
+        return customerServiceRepository.saveAndFlush(newCustomerService);
+    }
+
+    @Override
+    public void deleteCustomerService(CustomerService customerService) {
+        System.out.println("/customerservice/{phonenumber}/{servicename}/delete: " + customerService.getCustomer().getPhoneNumber() + "|" + customerService.getService().getName());
+        CustomerService customerServiceFromDB = customerServiceRepository.findCustomerServiceByCustomerPhoneNumberAndServiceName(customerService.getCustomer().getPhoneNumber(), customerService.getService().getName());
+        customerServiceRepository.delete(customerServiceFromDB);
+    }
 }

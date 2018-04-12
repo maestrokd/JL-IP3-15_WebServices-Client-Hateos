@@ -30,7 +30,7 @@ public class AppController {
     @RequestMapping(value = "/", method = RequestMethod.GET)
     public ModelAndView getIndex() {
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("index");
+        modelAndView.setViewName("/index");
         return modelAndView;
     }
 

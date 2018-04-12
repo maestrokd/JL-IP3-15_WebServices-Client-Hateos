@@ -32,7 +32,7 @@ public class Service {
         customerService.setCustomer(customer);
         customerService.setService(this);
         customerServiceList.add(customerService);
-        customer.getCustomerServiceList().add(customerService);
+        customer.getCustomerServiceSet().add(customerService);
     }
 
 //    @ManyToMany(mappedBy = "serviceList")
@@ -43,21 +43,24 @@ public class Service {
     @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true, mappedBy = "customer")
     private Set<Event> eventList = new HashSet<>();
 
-    public void addEvent(Customer customer) {
-        Event event = new Event();
-        event.setCustomer(customer);
-        event.setService(this);
-        event.setDate(new Date());
-        event.setCost(this.payroll);
-        eventList.add(event);
-        customer.getEventList().add(event);
-    }
+//    public void addEvent(Customer customer) {
+//        Event event = new Event();
+//        event.setCustomer(customer);
+//        event.setService(this);
+//        event.setDate(new Date());
+//        event.setCost(this.payroll);
+//        eventList.add(event);
+//        customer.getEventList().add(event);
+//    }
 
 
     // Constructors
     public Service() {
     }
 
+    public Service(String name) {
+        this.name = name;
+    }
 
     // Getters and Setters
 
@@ -106,6 +109,21 @@ public class Service {
 
     // Methods
 
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Service service = (Service) o;
+
+        return name != null ? name.equals(service.name) : service.name == null;
+    }
+
+    @Override
+    public int hashCode() {
+        return name != null ? name.hashCode() : 0;
+    }
 
     @Override
     public String toString() {

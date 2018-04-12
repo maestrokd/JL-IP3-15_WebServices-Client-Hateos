@@ -84,11 +84,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
             .withUser("superadmin").password("superadmin").roles("SUPERADMIN");
     }
 
-//    /* To allow Pre-flight [OPTIONS] request from browser */
-//    @Override
-//    public void configure(WebSecurity web) throws Exception {
-//        web.ignoring().antMatchers(HttpMethod.OPTIONS, "/**");
-//    }
+    /* To allow Pre-flight [OPTIONS] request from browser */
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web.ignoring().antMatchers(HttpMethod.OPTIONS, "/**");
+    }
 
 
 }
