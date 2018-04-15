@@ -51,43 +51,15 @@ public class Customer {
 //    private List<Service> serviceList = new ArrayList<>();
 
 
+    @JsonManagedReference
     @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true, mappedBy = "customer")
     private Set<Event> eventList = new HashSet<>();
 
-//    public void addEvent(Service service) {
-//        Event event = new Event();
-//        event.setCustomer(this);
-//        event.setService(service);
-//        event.setDate(new Date());
-//        event.setCost(service.getPayroll());
-//        eventList.add(event);
-//        service.getEventList().add(event);
-//    }
 
 
     @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true, mappedBy = "customer")
     private List<Bill> billList = new ArrayList<>();
 
-
-//    public  void addBill(String startDate, String endDate, Dao dao) {
-////        Dao dao = new  Dao();
-//        SimpleDateFormat ft = new SimpleDateFormat ("yyyy-mm-dd HH:mm:ss");
-//        Date parsingStartDate = null;
-//        Date parsingEndDate = null;
-//        try {
-//            parsingStartDate = ft.parse(startDate);
-//            parsingEndDate = ft.parse(endDate);
-//        } catch (ParseException e) {
-//            e.printStackTrace();
-//        }
-//        Bill bill = new Bill();
-//        bill.setCustomer(this);
-//        bill.setStartDate(parsingStartDate);
-//        bill.setEndDate(parsingEndDate);
-//        bill.setAmount(dao.getAmountForPeriodForCustomer(this, startDate, endDate));
-//        billList.add(bill);
-////        dao.endDao();
-//    }
 
     // to avoid infinite recursion in JSON master-detail-master...
     @JsonManagedReference

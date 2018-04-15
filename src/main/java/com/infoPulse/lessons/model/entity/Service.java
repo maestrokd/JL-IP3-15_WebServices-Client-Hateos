@@ -1,5 +1,7 @@
 package com.infoPulse.lessons.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonManagedReference;
+
 import javax.persistence.*;
 import javax.xml.bind.annotation.XmlTransient;
 import java.util.*;
@@ -15,7 +17,6 @@ public class Service {
     @Column(name = "id")
     private int id;
 
-//    @Id
     @Column(name = "name", length = 50)
     private String name;
 
@@ -26,32 +27,15 @@ public class Service {
     @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true, mappedBy = "customer", fetch = FetchType.EAGER)
     private List<CustomerService> customerServiceList = new ArrayList<>();
 
-    public void addCustomer(Customer customer, ServiceStatus serviceStatus) {
-        CustomerService customerService = new CustomerService();
-        customerService.setServiceStatus(serviceStatus);
-        customerService.setCustomer(customer);
-        customerService.setService(this);
-        customerServiceList.add(customerService);
-        customer.getCustomerServiceSet().add(customerService);
-    }
 
 //    @ManyToMany(mappedBy = "serviceList")
 //    private List<Customer> customerList = new ArrayList<>();
 
 
     @XmlTransient
+    @JsonManagedReference
     @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true, mappedBy = "customer")
     private Set<Event> eventList = new HashSet<>();
-
-//    public void addEvent(Customer customer) {
-//        Event event = new Event();
-//        event.setCustomer(customer);
-//        event.setService(this);
-//        event.setDate(new Date());
-//        event.setCost(this.payroll);
-//        eventList.add(event);
-//        customer.getEventList().add(event);
-//    }
 
 
     // Constructors
@@ -108,8 +92,6 @@ public class Service {
 
 
     // Methods
-
-
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

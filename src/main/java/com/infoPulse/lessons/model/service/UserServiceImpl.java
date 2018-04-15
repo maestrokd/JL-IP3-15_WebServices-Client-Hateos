@@ -65,7 +65,6 @@ public class UserServiceImpl implements UserService {
     @Override
     public List<User> findAll() {
         List<User> userList = userRepository.findAll();
-        System.out.println(userList);
         return userList;
     }
 
@@ -88,7 +87,12 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void updateUser(User user) {
-        userRepository.saveAndFlush(user);
+        User userBD = userRepository.findUserByLogin(user.getLogin());
+        userBD.setRoleList(user.getRoleList());
+        userBD.setPassword(passwordEncoder.encode(user.getPassword()));
+        userBD.setName(user.getName());
+
+        userRepository.saveAndFlush(userBD);
     }
 
 

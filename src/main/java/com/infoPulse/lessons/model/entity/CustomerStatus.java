@@ -18,7 +18,7 @@ public class CustomerStatus {
 
     //    @Id
     @Column(name = "name")
-    private String name = "deactive";
+    private String name = CustomerStatusNames.DEACTIVE.customerStatusNames;
 
     @JsonBackReference
     @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true, mappedBy = "customerStatus", fetch = FetchType.EAGER)
@@ -62,4 +62,22 @@ public class CustomerStatus {
                 ", customerList=" + customerList +
                 '}';
     }
+
+
+    public enum CustomerStatusNames {
+        DEACTIVE("deactive"),
+        ACTIVE("active");
+
+        private String customerStatusNames;
+
+        CustomerStatusNames(String customerStatusNames) {
+            this.customerStatusNames = customerStatusNames;
+        }
+
+        public String getCustomerStatusNames() {
+            return customerStatusNames;
+        }
+    }
+
+
 }

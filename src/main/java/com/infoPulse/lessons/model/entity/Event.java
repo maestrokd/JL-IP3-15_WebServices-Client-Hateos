@@ -1,5 +1,7 @@
 package com.infoPulse.lessons.model.entity;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonGetter;
 import org.hibernate.annotations.CreationTimestamp;
 
 import javax.persistence.*;
@@ -21,10 +23,12 @@ public class Event implements Serializable {
     @Column(name = "id")
     private int id;
 
+    @JsonBackReference
     @ManyToOne
 //    @JoinColumn(name = "customer_id", foreignKey = @ForeignKey(name = "fk_customer_customer_services"))
     private Customer customer;
 
+    @JsonBackReference
     @ManyToOne
 //    @JoinColumn(name = "service_id", foreignKey = @ForeignKey(name = "fk_service_customer_services"))
     private Service service;
@@ -59,6 +63,11 @@ public class Event implements Serializable {
 
     public Service getService() {
         return service;
+    }
+
+    @JsonGetter("serviceName")
+    public String getServiceAsString() {
+        return service.getName();
     }
 
     public void setService(Service service) {

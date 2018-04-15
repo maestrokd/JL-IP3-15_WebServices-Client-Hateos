@@ -14,16 +14,14 @@ public class ServiceStatus {
     @Column(name = "id")
     private int id;
 
-//    @Id
     @Column(name = "name")
-    private String name = "deactive";
+    private String name = ServiceStatusNames.DISABLED.serviceStatusNames;
 
     @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true, mappedBy = "serviceStatus")
     private Set<CustomerService> customerServiceList = new HashSet<>();
 
 
     // Getter and Setter
-
     public int getId() {
         return id;
     }
@@ -47,4 +45,21 @@ public class ServiceStatus {
     public void setCustomerServiceList(Set<CustomerService> customerServiceList) {
         this.customerServiceList = customerServiceList;
     }
+
+public enum ServiceStatusNames {
+    DISABLED("disabled"),
+    ENABLED("enabled");
+
+    private String serviceStatusNames;
+
+    ServiceStatusNames(String serviceStatusNames) {
+        this.serviceStatusNames = serviceStatusNames;
+    }
+
+    public String getServiceStatusNames() {
+        return serviceStatusNames;
+    }
 }
+
+}
+

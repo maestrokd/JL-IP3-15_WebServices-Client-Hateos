@@ -21,13 +21,11 @@
 <div class="container-fluid">
     <div class="row content">
         <div class="col-sm-3">
-            <div class="col-sm-12">
                 <sec:authorize access="hasRole('ROLE_ADMIN')">
                     <button onclick="location.href='/protected/customers/find'" class="btn btn-primary btn-block">
                         Find Customer
                     </button>
                 </sec:authorize>
-            </div>
         </div>
 
         <div class="col-sm-9">

@@ -76,7 +76,7 @@ public class CustomerServiceServiceImpl implements CustomerServiceService {
 
         Customer selectedCustomer = customerRepository.findCustomerByPhoneNumber(customerService.getCustomer().getPhoneNumber());
         com.infoPulse.lessons.model.entity.Service selectedService = serviceRepository.findServiceByName(customerService.getService().getName());
-        ServiceStatus serviceStatus = serviceStatusRepository.findServiceStatusByName("disabled");
+        ServiceStatus serviceStatus = serviceStatusRepository.findServiceStatusByName(ServiceStatus.ServiceStatusNames.DISABLED.getServiceStatusNames());
 
 
         CustomerService newCustomerService = new CustomerService();
@@ -99,7 +99,6 @@ public class CustomerServiceServiceImpl implements CustomerServiceService {
 
     @Override
     public void deleteCustomerService(CustomerService customerService) {
-        System.out.println("/customerservice/{phonenumber}/{servicename}/delete: " + customerService.getCustomer().getPhoneNumber() + "|" + customerService.getService().getName());
         CustomerService customerServiceFromDB = customerServiceRepository.findCustomerServiceByCustomerPhoneNumberAndServiceName(customerService.getCustomer().getPhoneNumber(), customerService.getService().getName());
         customerServiceRepository.delete(customerServiceFromDB);
     }

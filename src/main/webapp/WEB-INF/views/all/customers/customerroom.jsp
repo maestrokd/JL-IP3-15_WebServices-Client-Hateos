@@ -11,41 +11,36 @@
 <%@ taglib prefix="sf" uri="http://www.springframework.org/tags/form" %>
 <html>
 <head>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
     <script type="text/javascript" src="../../resources/static/js/servicesforcustomer.js"></script>
+    <script type="text/javascript" src="../../resources/static/js/createevent.js"></script>
 
     <title>Customer Room</title>
 
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
-    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
 </head>
 <body onload="init()">
 <%@ include file="../../include/headnav.jsp" %>
 <div class="container-fluid">
     <div class="row content">
         <div class="col-sm-3">
-            <div class="col-sm-12">
+            <div>
                 <button onclick="location.href='/all/payments/add/${selectedCustomer.phoneNumber}'"
-                        class="btn btn-default btn-block">Create payment
+                        class="btn btn-default btn-block">Create payment</button>
+
+                <button onclick="location.href='/getallpayments/${selectedCustomer.id}'"
+                        class="btn btn-default btn-block">Show all payments By Customer</button>
+
+                <button onclick="location.href='/getallpayments'" class="btn btn-default btn-block">Show all payments
                 </button>
-            </div>
-            <div class="col-sm-12">
-                <button onclick="location.href='/getallpayments/${selectedCustomer.id}'" class="btn btn-default btn-block">Show
-                    all payments By Customer
-                </button>
-            </div>
-            <div class="col-sm-12">
-                <button onclick="location.href='/getallpayments'" class="btn btn-default btn-block">Show all payments</button>
-            </div>
+                <button id="sms" class="btn btn-warning btn-block">Create SMS <span class="badge"><div
+                        id="smsEventCounter"></div></span></button>
 
-            <div class="col-sm-12">
-                <button onclick="location.href='/all/events/${selectedCustomer.phoneNumber}/sms/create'" class="btn btn-default btn-block">Create SMS</button>
+                <%--<button onclick="location.href='/all/events/${selectedCustomer.phoneNumber}/mms/create'" class="btn btn-default btn-block">Create MMS</button>--%>
+                <button id="mms" class="btn btn-warning btn-block">Create MMS <span class="badge"><div
+                        id="mmsEventCounter"></div></span></button>
             </div>
-
-            <div class="col-sm-12">
-                <button onclick="location.href='/all/events/${selectedCustomer.phoneNumber}/mms/create'" class="btn btn-default btn-block">Create MMS</button>
-            </div>
-
         </div>
 
         <div class="col-sm-9">
@@ -104,10 +99,10 @@
                 </tbody>
             </table>
 
-            <div class="panel panel-default">
+            <div class="panel panel-info">
                 <div class="panel-heading">
                     <%--<h4>Panel with services</h4>--%>
-                        <strong>Panel with services</strong>
+                    <strong>Panel with services</strong>
                 </div>
                 <div class="panel-body">
                     <%--Panel Content--%>
@@ -133,7 +128,7 @@
                     <%--Panel Footer--%>
                     <div class="form-group">
                         <div class="blockquote-reverse">
-                            <label for="complete-field" class="control-label col-sm-4" >Select Service to Add:</label>
+                            <label for="complete-field" class="control-label col-sm-4">Select Service to Add:</label>
                         </div>
                         <div class="col-sm-4">
                             <select id="complete-field" class="form-control">
@@ -148,9 +143,19 @@
                 </div>
             </div>
 
+            <div class="panel panel-warning">
+                <div class="panel-heading">Panel with events
+                    <button id="showEventsButton" class="btn btn-default ">Show</button>
+                    <button id="hideEventsButton" class="btn btn-default ">Hide</button>
+                </div>
+                <div id="showEventsPanelBody" class="panel-body"></div>
+            </div>
+
 
         </div>
     </div>
 </div>
+
+
 </body>
 </html>

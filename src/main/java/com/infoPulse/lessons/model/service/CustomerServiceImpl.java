@@ -103,10 +103,10 @@ public class CustomerServiceImpl implements CustomerService {
             customerDB.setCustomerStatus(customerStatus);
             customerStatus.getCustomerList().add(customerDB);
 
-            if (customerStatus.getId() == 2) {
+            if (CustomerStatus.CustomerStatusNames.ACTIVE.getCustomerStatusNames().equals(customerStatus.getName())) {
                 customerDB.setActivatedDate(new Date());
             }
-            if (customerStatus.getId() == 1) {
+            if (CustomerStatus.CustomerStatusNames.DEACTIVE.getCustomerStatusNames().equals(customerStatus.getName())) {
                 customerDB.setDeactivatedDate(new Date());
             }
             customerStatusRepository.save(oldCustomerStatus);

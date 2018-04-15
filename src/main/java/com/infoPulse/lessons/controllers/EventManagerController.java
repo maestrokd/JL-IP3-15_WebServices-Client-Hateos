@@ -1,25 +1,19 @@
 package com.infoPulse.lessons.controllers;
 
-import com.infoPulse.lessons.model.dto.AssemblerCustomerDTO;
-import com.infoPulse.lessons.model.dto.CustomerDTO;
 import com.infoPulse.lessons.model.dto.EventDTO;
-import com.infoPulse.lessons.model.entity.Customer;
-import com.infoPulse.lessons.model.entity.CustomerStatus;
+import com.infoPulse.lessons.model.dto.PageResource;
 import com.infoPulse.lessons.model.entity.Event;
-import com.infoPulse.lessons.model.entity.Service;
 import com.infoPulse.lessons.model.service.*;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
-import javax.validation.Valid;
 import java.util.List;
-
 
 @RestController
 public class EventManagerController {
@@ -64,33 +58,85 @@ public class EventManagerController {
 
 
     // Methods
-    @RequestMapping (value = "all/events/{phonenumber}/{servicename}/create", method = RequestMethod.GET)
-    public ModelAndView getCustomerRoom(
+//    @RequestMapping (value = "all/events/{phonenumber}/{servicename}/create", method = RequestMethod.GET)
+//    public ModelAndView doCreateEvent(
+//            @PathVariable("phonenumber")
+//                    String phoneNumber
+//            ,@PathVariable("servicename")
+//                    String serviceName
+//            , RedirectAttributes redirectAttributes
+//    ) {
+//        ModelAndView modelAndView = new ModelAndView();
+//
+//        EventDTO eventDTO = new EventDTO(phoneNumber, serviceName);
+//
+//        Event event = eventService.createEvent(eventDTO);
+//
+//        if (event != null) {
+//            redirectAttributes.addFlashAttribute("message", "Event created successfully!");
+//            modelAndView.setViewName("redirect:/all/customers/" + phoneNumber);
+//            return modelAndView;
+//        }
+//
+//        redirectAttributes.addFlashAttribute("messageError", "Event create failed!");
+//        modelAndView.setViewName("redirect:/all/customers/" + phoneNumber);
+//        return modelAndView;
+//    }
+
+
+    @RequestMapping (value = "all/events/{phonenumber}/{servicename}/createAjax", method = RequestMethod.GET)
+    public ResponseEntity doCreateEventViaAjax(
             @PathVariable("phonenumber")
                     String phoneNumber
             ,@PathVariable("servicename")
                     String serviceName
             , RedirectAttributes redirectAttributes
     ) {
-        ModelAndView modelAndView = new ModelAndView();
-
         EventDTO eventDTO = new EventDTO(phoneNumber, serviceName);
 
         Event event = eventService.createEvent(eventDTO);
 
         if (event != null) {
             redirectAttributes.addFlashAttribute("message", "Event created successfully!");
-            modelAndView.setViewName("redirect:/all/customers/" + phoneNumber);
-            return modelAndView;
+            return new ResponseEntity(HttpStatus.OK);
         }
 
         redirectAttributes.addFlashAttribute("messageError", "Event create failed!");
-        modelAndView.setViewName("redirect:/all/customers/" + phoneNumber);
-        return modelAndView;
+        return new ResponseEntity(HttpStatus.BAD_REQUEST);
     }
 
 
+//    @RequestMapping(value = "all/events/{phonenumber}", method = RequestMethod.GET)
+//    public ResponseEntity<List<Event>> getEventsByCustomerPhoneNumberViaAjax(
+//            @PathVariable("phonenumber")
+//                    String phoneNumber
+//    ) {
+//        List<Event> events = eventService.findEventsByCustomerPhoneNumber(phoneNumber);
+//        return new ResponseEntity<>(events, HttpStatus.OK);
+//    }
 
+
+    @RequestMapping(value = "all/events/{phonenumber}", method = RequestMethod.GET)
+    public PageResource<Event> getEventsByCustomerPhoneNumberViaAjax(
+            @PathVariable("phonenumber")
+                    String phoneNumber
+            , Pageable pageable
+    ) {
+        Page<Event> events = eventService.findEventsByCustomerPhoneNumber(phoneNumber, pageable);
+        return new PageResource<>(events, "", "");
+    }
+
+
+    @RequestMapping(value = "all/events/{phonenumber}/{servicename}", method = RequestMethod.GET)
+    public ResponseEntity<List<Event>> getEventsByCustomerPhoneNumberAndServiceNameViaAjax(
+            @PathVariable("phonenumber")
+                    String phoneNumber
+            ,@PathVariable("servicename")
+                    String serviceName
+    ) {
+        List<Event> events = eventService.findEventsByCustomerPhoneNumberAndServiceName(phoneNumber, serviceName);
+        return new ResponseEntity<>(events, HttpStatus.OK);
+    }
 
 
 }

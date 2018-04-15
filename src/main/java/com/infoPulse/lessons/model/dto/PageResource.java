@@ -11,10 +11,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 import java.util.Iterator;
 import java.util.List;
 
-/**
- * @author Danny Briskin (sql.coach.kiev@gmail.com)
- * on  20.08.2017 for webServiceHateoas project.
- */
 public class PageResource<T> extends ResourceSupport
         implements Page<T> {
 
