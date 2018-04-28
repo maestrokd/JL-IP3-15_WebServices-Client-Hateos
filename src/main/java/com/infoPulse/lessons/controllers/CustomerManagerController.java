@@ -185,12 +185,12 @@ public class CustomerManagerController {
         Customer customerDB = customerService.saveCustomer(addCustomerDTO);
 
         if (customerDB != null) {
-            modelAndView.setViewName("redirect:/protected/users/" + addCustomerDTO.getUserLogin());
+            modelAndView.setViewName("redirect:/all/users/" + addCustomerDTO.getUserLogin());
             redirectAttributes.addFlashAttribute("message", "Customer " + addCustomerDTO.getPhoneNumber() + " added successfully");
             return modelAndView;
         }
 
-        modelAndView.setViewName("redirect:/protected/users/" + addCustomerDTO.getUserLogin());
+        modelAndView.setViewName("redirect:/all/users/" + addCustomerDTO.getUserLogin());
         redirectAttributes.addFlashAttribute("messageError", "Customer " + addCustomerDTO.getPhoneNumber() + " addition failed");
         return modelAndView;
     }
