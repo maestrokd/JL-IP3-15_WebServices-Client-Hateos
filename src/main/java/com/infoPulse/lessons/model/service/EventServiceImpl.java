@@ -14,7 +14,7 @@ import org.springframework.data.domain.Pageable;
 import java.util.List;
 import java.util.Random;
 
-@org.springframework.stereotype.Service
+@org.springframework.stereotype.Service(value = "eventService01")
 public class EventServiceImpl implements EventService {
 
     // Fields

@@ -1,7 +1,5 @@
 package com.infoPulse.lessons.controllers;
 
-import com.infoPulse.lessons.model.service.RoleServiceImpl;
-import com.infoPulse.lessons.model.service.UserServiceImpl;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.Authentication;
@@ -11,18 +9,10 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.security.Principal;
 
-/**
- * @author Danny Briskin (sql.coach.kiev@gmail.com)
- *         on  14.07.2017 for spingSecurityAdv project.
- */
 
 @RestController
 public class AppController {
 
-    @Autowired
-    UserServiceImpl userServiceImpl;
-    @Autowired
-    RoleServiceImpl roleServiceImpl;
     @Autowired
     Logger logger;
 

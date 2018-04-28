@@ -6,6 +6,7 @@ import com.infoPulse.lessons.model.entity.Event;
 import com.infoPulse.lessons.model.service.*;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -20,10 +21,10 @@ public class EventManagerController {
 
     // Fields
     private EventService eventService;
-    private UserService userService;
-    private CustomerService customerService;
-    private CustomerStatusService customerStatusService;
-    private ServiceService serviceService;
+//    private UserService userService;
+//    private CustomerService customerService;
+//    private CustomerStatusService customerStatusService;
+//    private ServiceService serviceService;
 
 
     @Autowired
@@ -32,29 +33,31 @@ public class EventManagerController {
 
     // Getters and Setters
     @Autowired
-    public void setEventService(EventService eventService) {
+    public void setEventService(
+            @Qualifier("eventService01")
+                                            EventService eventService) {
         this.eventService = eventService;
     }
 
-    @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
-
-    @Autowired
-    public void setCustomerService(CustomerService customerService) {
-        this.customerService = customerService;
-    }
-
-    @Autowired
-    public void setCustomerStatusService(CustomerStatusService customerStatusService) {
-        this.customerStatusService = customerStatusService;
-    }
-
-    @Autowired
-    public void setServiceService(ServiceService serviceService) {
-        this.serviceService = serviceService;
-    }
+//    @Autowired
+//    public void setUserService(UserService userService) {
+//        this.userService = userService;
+//    }
+//
+//    @Autowired
+//    public void setCustomerService(CustomerService customerService) {
+//        this.customerService = customerService;
+//    }
+//
+//    @Autowired
+//    public void setCustomerStatusService(CustomerStatusService customerStatusService) {
+//        this.customerStatusService = customerStatusService;
+//    }
+//
+//    @Autowired
+//    public void setServiceService(ServiceService serviceService) {
+//        this.serviceService = serviceService;
+//    }
 
 
     // Methods

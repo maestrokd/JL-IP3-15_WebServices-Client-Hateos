@@ -31,7 +31,7 @@
 
         <div class="col-sm-9">
 
-            <sf:form class="form-horizontal" action="/users/${updateUser.login}/update" modelAttribute="updateUser">
+            <sf:form class="form-horizontal" action="/all/users/${updateUser.login}/update" modelAttribute="updateUser">
 
                 <div class="form-group">
                     <label class="control-label col-sm-2" for="login">
@@ -49,7 +49,8 @@
                         <s:message code="property.enterYourPassword"/>
                     </label>
                     <div class="col-sm-4">
-                        <sf:password class="form-control" path="password" placeholder="YourPassword"
+                        <sf:password class="form-control" path="password"
+                                     placeholder="YourPassword"
                                      pattern="[A-Za-z0-9]{4,}"/>
                         <sf:errors path="password" cssClass="error"/>
                     </div>

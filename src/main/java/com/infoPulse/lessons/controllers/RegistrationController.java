@@ -5,6 +5,7 @@ import com.infoPulse.lessons.model.entity.User;
 import com.infoPulse.lessons.model.entity.VerificationToken;
 import com.infoPulse.lessons.core.registration.events.OnRegistrationCompleteEvent;
 import com.infoPulse.lessons.model.service.UserService;
+import com.infoPulse.lessons.model.service.VerificationTokenService;
 import com.infoPulse.lessons.model.service.VerificationTokenServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
@@ -23,9 +24,8 @@ public class RegistrationController {
 
     // Fields
     private UserService userService;
+    private VerificationTokenService verificationTokenService;
 
-    @Autowired
-    VerificationTokenServiceImpl verificationTokenService;
 
     @Autowired
     ApplicationEventPublisher applicationEventPublisher;
@@ -39,11 +39,20 @@ public class RegistrationController {
         this.userService = userService;
     }
 
+    @Autowired
+    public void setVerificationTokenService(VerificationTokenService verificationTokenService) {
+        this.verificationTokenService = verificationTokenService;
+    }
+
+
+
+
 
     // Methods
     @RequestMapping(value = "/userregistration", method = RequestMethod.GET)
     public ModelAndView getUserRegistrationForm(Locale locale , WebRequest webRequest) {
 
+        //
         System.out.println(locale.getDisplayLanguage());
         System.out.println(messageSource.getMessage("message.regSuccess", null, locale));
         System.out.println("-------------------------------------------");

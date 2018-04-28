@@ -1,11 +1,4 @@
 <!DOCTYPE html>
-<%--
-  Created by IntelliJ IDEA.
-  User: maestro
-  Date: 21.12.2017
-  Time: 0:06
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="sf" uri="http://www.springframework.org/tags/form" %>
@@ -21,11 +14,11 @@
 <div class="container-fluid">
     <div class="row content">
         <div class="col-sm-3">
-                <sec:authorize access="hasRole('ROLE_ADMIN')">
-                    <button onclick="location.href='/protected/customers/find'" class="btn btn-primary btn-block">
-                        Find Customer
-                    </button>
-                </sec:authorize>
+            <sec:authorize access="hasRole('ROLE_ADMIN')">
+                <button onclick="location.href='/protected/customers/find'" class="btn btn-primary btn-block">
+                    Find Customer
+                </button>
+            </sec:authorize>
         </div>
 
         <div class="col-sm-9">
@@ -56,7 +49,6 @@
                         <th>Name</th>
                         <th>E-mail</th>
                         <th>Roles</th>
-                            <%--<th>Password</th>--%>
                         <th>Action</th>
                     </tr>
                     </thead>
@@ -74,20 +66,16 @@
                                     </c:forEach>
                                 </c:if>
                             </td>
-                                <%--<td value="${listItem}">${listItem.password}</td>--%>
                             <td>
-                                <button onclick="location.href='/protected/users/${listItem.login}'"
+                                <button onclick="location.href='/all/users/${listItem.login}'"
                                         class="btn btn-info">Info
                                 </button>
-                                    <%--<button onclick="location.href='/customer/${listItem.phoneNumber}'">Query</button>--%>
-                                <button onclick="location.href='/users/${listItem.login}/update'"
+                                <button onclick="location.href='/all/users/${listItem.login}/update'"
                                         class="btn btn-primary">Update
                                 </button>
-                                    <%--<a href="/users/${listItem.login}/update" class="button green">Update</a>--%>
-                                <button onclick="location.href='/users/${listItem.login}/delete'"
+                                <button onclick="location.href='/protected/users/${listItem.login}/delete'"
                                         class="btn btn-danger">Delete
                                 </button>
-                                    <%--<a href="/users/${listItem.login}/delete" class="button red">Delete</a>--%>
                             </td>
                         </tr>
                     </c:forEach>

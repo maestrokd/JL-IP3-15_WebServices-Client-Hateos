@@ -1,11 +1,4 @@
 <!DOCTYPE html>
-<%--
-  Created by IntelliJ IDEA.
-  User: maestro
-  Date: 21.12.2017
-  Time: 0:06
-  To change this template use File | Settings | File Templates.
---%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="sf" uri="http://www.springframework.org/tags/form" %>
@@ -22,11 +15,11 @@
 <div class="container-fluid">
     <div class="row content">
         <div class="col-sm-3">
-                <sec:authorize access="hasRole('ROLE_ADMIN')">
-                    <button onclick="location.href='/protected/customers/add'" class="btn btn-primary btn-block">Add New
-                        Customer
-                    </button>
-                </sec:authorize>
+            <sec:authorize access="hasRole('ROLE_ADMIN')">
+                <button onclick="location.href='/protected/customers/add'" class="btn btn-primary btn-block">Add New
+                    Customer
+                </button>
+            </sec:authorize>
         </div>
 
         <div class="col-sm-9">
@@ -50,7 +43,6 @@
             </c:if>
 
             <c:if test="${selectedUser != null}">
-                <%--<p>Numbers for ${selectedUser.login}  </p>--%>
                 <table class="table table-condensed">
                     <tbody>
                     <tr>
@@ -69,11 +61,9 @@
                     <tr>
                         <td>Update User:</td>
                         <td>
-                                <%--<button onclick="location.href='/customer/${selectedCustomer.phoneNumber}'">Info</button>--%>
-                                <%--<button onclick="location.href='/all/customers/${selectedCustomer.phoneNumber}/update'"--%>
-                                <%--class="btn btn-primary btn-md">Update--%>
-                                <%--</button>--%>
-                                <%--<button onclick="location.href='/all/customers/${selectedCustomer.phoneNumber}/delete'" class="btn btn-danger">Delete</button>--%>
+                            <button onclick="location.href='/all/users/${selectedUser.login}/update'"
+                                    class="btn btn-primary">Update
+                            </button>
                         </td>
                     </tr>
                     </tbody>
@@ -86,7 +76,6 @@
                     <h4>Panel with phone numbers</h4>
                 </div>
                 <div class="panel-body">
-                    <%--Panel Content--%>
                     <table class="table table-striped">
                         <thead>
                         <tr>
@@ -104,18 +93,12 @@
                                     <td value="${listItem}">${listItem.customerStatus.name}</td>
                                     <td value="${listItem}">${listItem.balance}</td>
                                     <td>
-
-                                            <%--<a href="/customer/${listItem.phoneNumber}" class="button green">Info</a>--%>
                                         <button onclick="location.href='/all/customers/${listItem.phoneNumber}'"
                                                 class="btn btn-info">Info
                                         </button>
-
-                                            <%--<a href="/customer/${listItem.phoneNumber}/update" class="button green">Update</a>--%>
                                         <button onclick="location.href='/all/customers/${listItem.phoneNumber}/update'"
                                                 class="btn btn-primary">Update
                                         </button>
-
-                                            <%--<a href="/customer/${listItem.phoneNumber}/delete" class="button red">Delete</a>--%>
                                         <sec:authorize access="hasRole('ROLE_ADMIN')">
                                             <c:if test="${selectedUser != null}">
                                                 <button onclick="location.href='/protected/customers/${listItem.phoneNumber}/delete?login=${selectedUser.login}'"

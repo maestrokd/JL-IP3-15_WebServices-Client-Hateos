@@ -88,8 +88,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public void updateUser(User user) {
         User userBD = userRepository.findUserByLogin(user.getLogin());
-        userBD.setRoleList(user.getRoleList());
-        userBD.setPassword(passwordEncoder.encode(user.getPassword()));
+        if (!user.getRoleList().isEmpty()) {
+            userBD.setRoleList(user.getRoleList());
+        }
+        if (!"".equals(user.getPassword())) {
+            System.out.println("Come''");
+            userBD.setPassword(passwordEncoder.encode(user.getPassword()));
+        }
         userBD.setName(user.getName());
 
         userRepository.saveAndFlush(userBD);
@@ -127,16 +132,16 @@ public class UserServiceImpl implements UserService {
             System.out.println("There is an account with that email address: " + userDto.getEmail());
             return null;
         } else {
-        User user = new User();
+            User user = new User();
 //        Role role = roleRepository.findRoleByName("ROLE_USER");
-        user.setLogin(userDto.getLogin());
-        user.setPassword(passwordEncoder.encode(userDto.getPassword()));
-        user.setName(userDto.getName());
-        user.setEmail(userDto.getEmail());
-        user.addToRole(roleRepository.getOne(1));
-        userRepository.save(user);
+            user.setLogin(userDto.getLogin());
+            user.setPassword(passwordEncoder.encode(userDto.getPassword()));
+            user.setName(userDto.getName());
+            user.setEmail(userDto.getEmail());
+            user.addToRole(roleRepository.getOne(1));
+            userRepository.save(user);
 //        roleRepository.save(role);
-        return user;
+            return user;
         }
     }
 

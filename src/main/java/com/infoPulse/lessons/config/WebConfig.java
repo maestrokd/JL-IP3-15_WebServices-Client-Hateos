@@ -103,6 +103,11 @@ public class WebConfig extends WebMvcConfigurerAdapter {
     }
 
 
+    @Bean
+    public String domain() {
+        return environment.getRequiredProperty("property.domain");
+    }
+
 
 
 }

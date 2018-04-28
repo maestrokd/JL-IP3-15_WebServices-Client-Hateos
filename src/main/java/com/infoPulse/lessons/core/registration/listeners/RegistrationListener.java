@@ -22,6 +22,9 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
     private MessageSource messageSource;
 
     @Autowired
+    private String domain;
+
+    @Autowired
     private JavaMailSender javaMailSender;
 
     @Override
@@ -48,7 +51,7 @@ public class RegistrationListener implements ApplicationListener<OnRegistrationC
         String message = messageSource.getMessage("message.regSuccess", null, event.getLocale());
 //        System.out.println("S6: " + message);
 
-        String domain = messageSource.getMessage("property.domain", null, event.getLocale());
+//        String domain = messageSource.getMessage("property.domain", null, event.getLocale());
 
         SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
         simpleMailMessage.setTo(recipientAddres);

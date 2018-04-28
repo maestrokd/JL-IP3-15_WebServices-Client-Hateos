@@ -1,10 +1,3 @@
-<%--
-  Created by IntelliJ IDEA.
-  User: maestro
-  Date: 11.02.2018
-  Time: 18:15
-  To change this template use File | Settings | File Templates.
---%>
 
 <%@ taglib prefix="s" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -26,7 +19,7 @@
         </div>
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
-                <li class="active"><a href="/all/userhome">Home</a></li>
+                <li class="active"><a href="/all/users/${pageContext.request.userPrincipal.name}">Home</a></li>
                 <li><a href="/protected/users/userlist">User List</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
@@ -53,14 +46,15 @@
                 </c:if>
                 <c:if test="${pageContext.request.userPrincipal.name != null}">
                     <li><a href="#">Welcome : ${pageContext.request.userPrincipal.name}</a></li>
-                    <c:url var="logoutUrl" value="/logout" />
+                    <c:url var="logoutUrl" value="/logout"/>
                     <form action="${logoutUrl}" id="logout" class="navbar-form navbar-left" method="post">
                         <div class="input-group">
                             <input type="hidden" name="${_csrf.parameterName}"
-                                   value="${_csrf.token}" />
+                                   value="${_csrf.token}"/>
                             <div class="input-group-btn">
-                                <%--<button class="btn btn-default" type="submit">Logout</button>--%>
-                                <button class="btn btn-link" type="submit"><span class="glyphicon glyphicon-log-out"></span> Logout</button>
+                                <button class="btn btn-link" type="submit"><span
+                                        class="glyphicon glyphicon-log-out"></span> Logout
+                                </button>
                             </div>
                         </div>
                     </form>

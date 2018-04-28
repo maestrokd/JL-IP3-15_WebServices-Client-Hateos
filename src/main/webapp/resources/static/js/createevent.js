@@ -139,7 +139,15 @@ function doFillShowEventsPanelBody(data) {
         var tdElement4 = document.createElement("td");
 
         tdElement1.appendChild(document.createTextNode(data["content"][index]["serviceName"]));
-        tdElement2.appendChild(document.createTextNode(new Date(data["content"][index]["startDate"]).toUTCString()));
+        tdElement2.appendChild(document.createTextNode(new Date(data["content"][index]["startDate"])
+            .toLocaleDateString("ru", {
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric',
+                hour: 'numeric',
+                minute: 'numeric',
+                second: 'numeric'})
+        ));
         tdElement3.appendChild(document.createTextNode(data["content"][index]["duration"]));
         tdElement4.appendChild(document.createTextNode(data["content"][index]["cost"]));
 

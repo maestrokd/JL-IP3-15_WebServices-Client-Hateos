@@ -85,7 +85,7 @@ public class UserManagerController {
     }
 
 
-    @RequestMapping(value = "/protected/users/{login}", method = RequestMethod.GET)
+    @RequestMapping(value = "/all/users/{login}", method = RequestMethod.GET)
     public ModelAndView getUserHomeByLogin(
             @PathVariable("login")
                     String login
@@ -109,11 +109,9 @@ public class UserManagerController {
 
     @RequestMapping(value = "/protected/users/userlist", method = RequestMethod.GET)
     public ModelAndView getUserList(ModelAndView modelAndView
-//    , @RequestParam(name = "customMessage2") String customMessage
     ) {
 
-//        System.out.println("@@@@Custom Message: " + customMessage);
-
+        // Section for training
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
             logger.info("/protected/users/userlist:" +
@@ -136,7 +134,7 @@ public class UserManagerController {
     }
 
 
-    @RequestMapping(value = "/users/{login}/update", method = RequestMethod.GET)
+    @RequestMapping(value = "/all/users/{login}/update", method = RequestMethod.GET)
     public ModelAndView showUpdateUserForm(
             @PathVariable("login")
                     String login
@@ -147,7 +145,6 @@ public class UserManagerController {
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN"))) {
             modelAndView.addObject("roleList", roleService.findAll());
-            System.out.println("Contoller.showUpdateUserForm roleService.findAll() : " + roleService.findAll());
         }
 
         modelAndView.addObject("updateUser", userService.findUserByLogin(login));
@@ -156,7 +153,7 @@ public class UserManagerController {
     }
 
 
-    @RequestMapping(value = "/users/{login}/update", method = RequestMethod.POST)
+    @RequestMapping(value = "/all/users/{login}/update", method = RequestMethod.POST)
     public ModelAndView doUpdateUser(RedirectAttributes redirectAttributes,
                                      @ModelAttribute("userDto")
 //            @Valid
@@ -166,22 +163,21 @@ public class UserManagerController {
             , @PathVariable("login")
                                              String login
     ) {
-
         try {
 //            userService.updateRoles(login, user.getRoleList());
             userService.updateUser(user);
         } catch (Exception e) {
             redirectAttributes.addFlashAttribute("message", "User update was failed with ");
-            return new ModelAndView("redirect:/protected/users/userlist");
+            return new ModelAndView("redirect:/all/users/" + login);
         }
         redirectAttributes.addFlashAttribute("message", "User updated successfully ");
         ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("redirect:/protected/users/userlist");
+        modelAndView.setViewName("redirect:/all/users/" + login);
         return modelAndView;
     }
 
 
-    @RequestMapping(value = "/users/{login}/delete", method = RequestMethod.GET)
+    @RequestMapping(value = "/protected/users/{login}/delete", method = RequestMethod.GET)
     public ModelAndView doDeleteUser(
             RedirectAttributes redirectAttributes
             , @PathVariable("login")
