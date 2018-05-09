@@ -17,7 +17,7 @@ function loadCustomers() {
     $.ajax({
         type: "GET",
         contentType: "application/json",
-        url: "http://" + window.location.hostname + "/protected/customers/findajax?search=" + encodeURI(completeField.value),
+        url: "//" + window.location.hostname + "/protected/customers/findajax?search=" + encodeURI(completeField.value),
         headers: headers,
         dataType: 'json',
         timeout: 100000,
