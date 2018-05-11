@@ -21,7 +21,7 @@
             <div class="col-sm-3">
             </div>
             <div class="col-sm-9">
-                <sf:form class="form-horizontal" action="/createpayment" modelAttribute="paymentForm" >
+                <sf:form class="form-horizontal" action="/all/payments/add" modelAttribute="paymentForm" >
                     <div class="form-group">
                         <label class="control-label col-sm-2" for="customer.phoneNumber">Enter phone number:</label>
                         <div class="col-sm-4">

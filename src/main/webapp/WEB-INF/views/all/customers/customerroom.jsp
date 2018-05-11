@@ -29,11 +29,10 @@
                 <button onclick="location.href='/all/payments/add/${selectedCustomer.phoneNumber}'"
                         class="btn btn-default btn-block">Create payment</button>
 
-                <button onclick="location.href='/getallpayments/${selectedCustomer.id}'"
-                        class="btn btn-default btn-block">Show all payments By Customer</button>
+                <button onclick="location.href='/all/payments/bycustomer/${selectedCustomer.id}'"
+                        class="btn btn-default btn-block">Payments By Customer</button>
 
-                <button onclick="location.href='/getallpayments'" class="btn btn-default btn-block">Show all payments
-                </button>
+
                 <button id="sms" class="btn btn-warning btn-block">Create SMS <span class="badge"><div
                         id="smsEventCounter"></div></span></button>
 

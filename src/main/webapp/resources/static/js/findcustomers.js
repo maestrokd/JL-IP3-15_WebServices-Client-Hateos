@@ -14,10 +14,22 @@ function loadCustomers() {
 
     clearAutoCompleteDiv();
 
+    var port = (window.location.port) ? (":" + window.location.port) : ("");
+    console.log("INFO port: " + port);
+    console.log("INFO url: " + "//" + window.location.hostname
+        + port
+        + "/protected/customers/findajax?search=" + encodeURI(completeField.value)
+    );
+
+
     $.ajax({
+
         type: "GET",
         contentType: "application/json",
-        url: "//" + window.location.hostname + "/protected/customers/findajax?search=" + encodeURI(completeField.value),
+        url: "//"
+            + window.location.hostname
+            + port
+            + "/protected/customers/findajax?search=" + encodeURI(completeField.value),
         headers: headers,
         dataType: 'json',
         timeout: 100000,

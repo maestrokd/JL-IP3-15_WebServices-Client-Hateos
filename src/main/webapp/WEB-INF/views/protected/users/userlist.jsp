@@ -18,6 +18,8 @@
                 <button onclick="location.href='/protected/customers/find'" class="btn btn-primary btn-block">
                     Find Customer
                 </button>
+                <button onclick="location.href='/all/payments/page'" class="btn btn-default btn-block">All payments(Page)
+                </button>
             </sec:authorize>
         </div>
 

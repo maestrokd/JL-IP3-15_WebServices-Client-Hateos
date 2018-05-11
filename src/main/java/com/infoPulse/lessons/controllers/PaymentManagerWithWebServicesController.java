@@ -7,12 +7,16 @@ import com.infoPulse.lessons.model.dto.PaymentDTO;
 import com.infoPulse.lessons.model.entity.Customer;
 import com.infoPulse.lessons.model.entity.Payment;
 import com.infoPulse.lessons.model.service.CustomerService;
+import org.apache.http.conn.ssl.NoopHostnameVerifier;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
 import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.ParameterizedTypeReference;
 import org.springframework.data.domain.Page;
 import org.springframework.http.*;
 import org.apache.commons.codec.binary.Base64;
+import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.servlet.ModelAndView;
@@ -25,19 +29,22 @@ import java.util.List;
 @RestController
 public class PaymentManagerWithWebServicesController {
 
-//    @Autowired
-//    UserServiceImpl userServiceImpl;
-//    @Autowired
-//    RoleServiceImpl roleServiceImpl;
-
     // Fields
-    private CustomerService customerService;
+    private static boolean isHttps = false;
 
-    @Autowired
-    Logger logger;
+//    private String domain = "https://abonentroom-payment.herokuapp.com";
+    private String domain = "http://localhost:8090";
+
+    private Logger logger;
+    private CustomerService customerService;
 
 
     // Getters and Setters
+    @Autowired
+    public void setLogger(Logger logger) {
+        this.logger = logger;
+    }
+
     @Autowired
     public void setCustomerService(CustomerService customerService) {
         this.customerService = customerService;
@@ -45,7 +52,7 @@ public class PaymentManagerWithWebServicesController {
 
 
     // Methods
-    public static HttpHeaders createHeaders(String username, String password) {
+    private static HttpHeaders createHeaders(String username, String password) {
         return new HttpHeaders() {{
             String auth = username + ":" + password;
             byte[] encodedAuth = Base64.encodeBase64(
@@ -56,11 +63,26 @@ public class PaymentManagerWithWebServicesController {
     }
 
 
-    @RequestMapping(value = "/getpayment", method = RequestMethod.GET)
-    public ModelAndView getPayment() {
+    private static RestTemplate createRestTemplate() {
+        if (!isHttps){
+            return new RestTemplate();
+        }
+        System.setProperty("javax.net.ssl.trustStore", "src\\main\\resources\\tomcat.keystore");
+        CloseableHttpClient httpClient
+                = HttpClients.custom()
+                .setSSLHostnameVerifier(new NoopHostnameVerifier())
+                .build();
+        HttpComponentsClientHttpRequestFactory httpComponentsClientHttpRequestFactory = new HttpComponentsClientHttpRequestFactory();
+        httpComponentsClientHttpRequestFactory.setHttpClient(httpClient);
+        return new RestTemplate(httpComponentsClientHttpRequestFactory);
+    }
+
+
+    @RequestMapping(value = "/all/payments/{paymentId}", method = RequestMethod.GET)
+    public ModelAndView findPaymentById(@PathVariable int paymentId) {
 
         RestTemplate restTemplate = new RestTemplate();
-        String url = "http://localhost:8090/api/payments/1";
+        String url = domain + "/api/payments/" + paymentId;
 
         HttpHeaders headers = createHeaders("user", "user");
         headers.setContentType(MediaType.APPLICATION_JSON);
@@ -74,9 +96,6 @@ public class PaymentManagerWithWebServicesController {
                 , requestEntity, PaymentDTO.class);
         PaymentDTO article = responseEntity.getBody();
 
-        System.out.println(article);
-        System.out.println("============================");
-
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("selectedPayment", article);
         modelAndView.setViewName("/all/payments/paymentinfo");
@@ -84,31 +103,26 @@ public class PaymentManagerWithWebServicesController {
     }
 
 
-    @RequestMapping(value = "/getallpayments/{customerId}", method = RequestMethod.GET)
-    public ModelAndView getAllPaymentsByCustomer(@PathVariable int customerId) {
+    @RequestMapping(value = "/all/payments/bycustomer/{customerId}", method = RequestMethod.GET)
+    public ModelAndView findAllPaymentsByCustomer(@PathVariable int customerId) {
 
-        RestTemplate restTemplate = new RestTemplate();
-        String url = "http://localhost:8090/api/paymentsall/" + customerId;
+        RestTemplate restTemplate = createRestTemplate();
+
+        String url = domain + "/api/paymentsall/" + customerId;
 
         HttpHeaders headers = createHeaders("user", "user");
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        // Представляет объект запроса HTTP или ответа, состоящий из заголовков и тела.
-        // Обычно используется в сочетании с RestTemplate,
         HttpEntity<String> requestEntity = new HttpEntity<>(headers);
 
-        // ResponseEntity - Расширение HttpEntity, которое добавляет код состояния HttpStatus.
         ResponseEntity<List<PaymentDTO>> responseEntity = restTemplate.exchange(
                 url
                 , HttpMethod.GET
                 , requestEntity
                 , new ParameterizedTypeReference<List<PaymentDTO>>() {});
-        List<PaymentDTO> article = responseEntity.getBody();
-
 //            , new ParameterizedTypeReference<PageResource>() {});
 
-        System.out.println(article.size());
-        System.out.println("============================");
+        List<PaymentDTO> article = responseEntity.getBody();
 
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.addObject("paymentList", article);
@@ -131,7 +145,7 @@ public class PaymentManagerWithWebServicesController {
     }
 
 
-    @RequestMapping(value = "/createpayment", method = RequestMethod.POST)
+    @RequestMapping(value = "/all/payments/add", method = RequestMethod.POST)
     public ModelAndView doCreatePayment(
             @ModelAttribute(name = "paymentForm")
                     Payment paymentForm
@@ -143,26 +157,15 @@ public class PaymentManagerWithWebServicesController {
 
         PaymentDTO paymentDTO = AssemblerPaymentDTO.getInstance().getPaymentDTO(paymentForm);
 
-        RestTemplate restTemplate = new RestTemplate();
-        String url = "http://localhost:8090/api/paymentcreate";
+        RestTemplate restTemplate = createRestTemplate();
+
+        String url = domain + "/api/paymentcreate";
 
         HttpHeaders headers = createHeaders("admin", "admin");
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-//        ObjectMapper objectMapper = new ObjectMapper();
-//        String jsonInString = null;
-//        try {
-//            jsonInString = objectMapper.writeValueAsString(paymentDTO);
-//            System.out.println("JSON" + jsonInString);
-//        } catch (JsonProcessingException e) {
-//            e.printStackTrace();
-//        }
-
-        // Представляет объект запроса HTTP или ответа, состоящий из заголовков и тела.
-        // Обычно используется в сочетании с RestTemplate,
         HttpEntity<PaymentDTO> requestEntity = new HttpEntity<>(paymentDTO, headers);
 
-        // ResponseEntity - Расширение HttpEntity, которое добавляет код состояния HttpStatus.
         ResponseEntity<PaymentDTO> responseEntity = restTemplate.exchange(
                 url
                 , HttpMethod.POST
@@ -170,12 +173,22 @@ public class PaymentManagerWithWebServicesController {
                 , PaymentDTO.class);
         PaymentDTO paymentId = responseEntity.getBody();
 
-        System.out.println(paymentId);
-        System.out.println("============================");
-
         ModelAndView modelAndView = new ModelAndView();
         redirectAttributes.addFlashAttribute("message", "Payment " + paymentId.getPaymentId() + " created successfully");
         modelAndView.setViewName("redirect:/all/customers/" + paymentForm.getCustomer().getPhoneNumber());
+        return modelAndView;
+    }
+
+
+    //Client
+    @RequestMapping(value = "/all/payments/page", method = RequestMethod.GET)
+    public ModelAndView findAllPaymentWithPage(
+//            @PathVariable(name = "size") Integer size,
+//            @PathVariable(name = "page") Integer page
+    ) {
+
+        ModelAndView modelAndView = new ModelAndView();
+        modelAndView.setViewName("all/payments/allpaymentslist");
         return modelAndView;
     }
 
@@ -185,8 +198,7 @@ public class PaymentManagerWithWebServicesController {
 
 
 
-
-
+    // Temp method for Test
     @RequestMapping(value = "/getallpaymentj", method = RequestMethod.GET)
     public ModelAndView getAllPaymentJ() {
 
@@ -196,11 +208,8 @@ public class PaymentManagerWithWebServicesController {
         HttpHeaders headers = createHeaders("user", "user");
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        // Представляет объект запроса HTTP или ответа, состоящий из заголовков и тела.
-        // Обычно используется в сочетании с RestTemplate,
         HttpEntity<String> requestEntity = new HttpEntity<>(headers);
 
-        // ResponseEntity - Расширение HttpEntity, которое добавляет код состояния HttpStatus.
         ResponseEntity<CustomPageImpl<PaymentDTO>> responseEntity = restTemplate.exchange(
                 url
                 , HttpMethod.GET
@@ -228,21 +237,12 @@ public class PaymentManagerWithWebServicesController {
         return modelAndView;
     }
 
-    //Client
-    @RequestMapping(value = "/getallpayments", method = RequestMethod.GET)
-    public ModelAndView getAllPayment(
-//            @PathVariable(name = "size") Integer size,
-//            @PathVariable(name = "page") Integer page
-    ) {
-
-        ModelAndView modelAndView = new ModelAndView();
-        modelAndView.setViewName("all/payments/allpaymentslist");
-        return modelAndView;
-    }
-
-    //server:8090 -> client:8080 -> front:8080
 
 
+
+
+
+    // Bad method
     @RequestMapping(value = "/getallpaymentjs", method = RequestMethod.GET)
     public ResponseEntity getAllPaymentJs() {
 
@@ -254,11 +254,8 @@ public class PaymentManagerWithWebServicesController {
         HttpHeaders headers = createHeaders("user", "user");
         headers.setContentType(MediaType.APPLICATION_JSON);
 
-        // Представляет объект запроса HTTP или ответа, состоящий из заголовков и тела.
-        // Обычно используется в сочетании с RestTemplate,
         HttpEntity<String> requestEntity = new HttpEntity<>(headers);
 
-        // ResponseEntity - Расширение HttpEntity, которое добавляет код состояния HttpStatus.
         ResponseEntity<PageResource> responseEntity = restTemplate.exchange(
                 url
                 , HttpMethod.GET

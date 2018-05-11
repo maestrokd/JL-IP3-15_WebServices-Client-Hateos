@@ -20,7 +20,7 @@
         <div class="collapse navbar-collapse" id="myNavbar">
             <ul class="nav navbar-nav">
                 <li class="active"><a href="/all/users/${pageContext.request.userPrincipal.name}">Home</a></li>
-                <li><a href="/protected/users/userlist">User List</a></li>
+                <li><a href="/protected/users/userlist">Admin Panel</a></li>
             </ul>
             <ul class="nav navbar-nav navbar-right">
 
