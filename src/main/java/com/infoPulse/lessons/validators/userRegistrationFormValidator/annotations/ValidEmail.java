@@ -1,7 +1,6 @@
 package com.infoPulse.lessons.validators.userRegistrationFormValidator.annotations;
 
 import com.infoPulse.lessons.validators.userRegistrationFormValidator.validators.EmailValidator;
-
 import javax.validation.Constraint;
 import javax.validation.Payload;
 import java.lang.annotation.Documented;
@@ -19,7 +18,6 @@ import static java.lang.annotation.ElementType.TYPE;
 @Documented
 public @interface ValidEmail {
 
-//    String message() default "Invalid Email";
     String message() default "{error.enterInvalidEmail}";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
