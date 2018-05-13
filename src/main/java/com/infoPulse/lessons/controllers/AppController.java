@@ -7,18 +7,35 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.servlet.http.HttpSession;
 import java.security.Principal;
+
+import java.util.Enumeration;
 
 
 @RestController
 public class AppController {
 
+    // Fields
+    private Logger logger;
+
+
+    // Setters
     @Autowired
-    Logger logger;
+    public void setLogger(Logger logger) {
+        this.logger = logger;
+    }
 
 
+    // Methods
     @RequestMapping(value = "/", method = RequestMethod.GET)
-    public ModelAndView getIndex() {
+    public ModelAndView getIndex(HttpSession httpSession) {
+
+        Enumeration<String> attributeNames = httpSession.getAttributeNames();
+        while (attributeNames.hasMoreElements()){
+            logger.info(attributeNames.nextElement());
+        }
+
         ModelAndView modelAndView = new ModelAndView();
         modelAndView.setViewName("/index");
         return modelAndView;
@@ -28,12 +45,10 @@ public class AppController {
     @RequestMapping(value = {"/user**"}, method = {RequestMethod.GET})
     public ModelAndView welcomePage() {
 
-        Authentication auth
-                = SecurityContextHolder.getContext().getAuthentication();
+        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
-            System.out.println("User: " + auth.getName()
-                    + " Principal: "
-                    + auth.getPrincipal().toString());
+            logger.info("User: " + auth.getName()
+                    + " Principal: " + auth.getPrincipal().toString());
         }
 
         ModelAndView model = new ModelAndView();
@@ -61,9 +76,8 @@ public class AppController {
         Authentication auth
                 = SecurityContextHolder.getContext().getAuthentication();
         if (auth != null) {
-            System.out.println("User: " + auth.getName()
-                    + " Principal: "
-                    + auth.getPrincipal().toString());
+            logger.info("User: " + auth.getName()
+                    + " Principal: " + auth.getPrincipal().toString());
         }
 
 
@@ -87,8 +101,7 @@ public class AppController {
             model.addObject("msg", "Hi " + user.getName()
                     + ", you do not have permission to access this page!");
         } else {
-            model.addObject("msg",
-                    "You do not have permission to access this page!");
+            model.addObject("msg","You do not have permission to access this page!");
         }
 
         model.setViewName("accessDenied");

@@ -2,21 +2,17 @@ package com.infoPulse.lessons.model.service;
 
 import com.infoPulse.lessons.model.dto.UserDto;
 import com.infoPulse.lessons.model.entity.Role;
-
 import com.infoPulse.lessons.model.entity.User;
-
 import com.infoPulse.lessons.model.entity.VerificationToken;
 import com.infoPulse.lessons.model.repository.RoleRepository;
-
 import com.infoPulse.lessons.model.repository.UserRepository;
 import com.infoPulse.lessons.model.repository.VerificationTokenRepository;
-import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-
 import java.util.List;
 import java.util.Set;
+
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -27,9 +23,6 @@ public class UserServiceImpl implements UserService {
 
     private VerificationTokenRepository verificationTokenRepository;
     private PasswordEncoder passwordEncoder;
-
-    @Autowired
-    Logger logger;
 
 
     // Setters
@@ -64,18 +57,14 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<User> findAll() {
-        List<User> userList = userRepository.findAll();
-        return userList;
+        return userRepository.findAll();
     }
 
 
     @Override
     public boolean isUserExist(String login) {
         User user = userRepository.findUserByLogin(login);
-        if (user != null) {
-            return true;
-        }
-        return false;
+        return user != null;
     }
 
 
@@ -92,11 +81,11 @@ public class UserServiceImpl implements UserService {
             userBD.setRoleList(user.getRoleList());
         }
         if (!"".equals(user.getPassword())) {
-            System.out.println("Come''");
             userBD.setPassword(passwordEncoder.encode(user.getPassword()));
         }
-        userBD.setName(user.getName());
-
+        if (!"".equals(user.getName())) {
+            userBD.setName(user.getName());
+        }
         userRepository.saveAndFlush(userBD);
     }
 
@@ -111,16 +100,10 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public void deleteUser(String userLogin) {
-        logger.error("deleteUser 1");
         User user = userRepository.findUserByLogin(userLogin);
         user.getRoleList().clear();
-        logger.error("deleteUser 2");
-//        verificationTokenRepository.delete(verificationTokenRepository.findVerificationTokenByUserLogin(userLogin));
-        logger.error("deleteUser 3");
         userRepository.saveAndFlush(user);
-        logger.error("deleteUser 4");
         userRepository.delete(user);
-        logger.error("deleteUser 5");
     }
 
 
@@ -133,14 +116,12 @@ public class UserServiceImpl implements UserService {
             return null;
         } else {
             User user = new User();
-//        Role role = roleRepository.findRoleByName("ROLE_USER");
             user.setLogin(userDto.getLogin());
             user.setPassword(passwordEncoder.encode(userDto.getPassword()));
             user.setName(userDto.getName());
             user.setEmail(userDto.getEmail());
             user.addToRole(roleRepository.getOne(1));
             userRepository.save(user);
-//        roleRepository.save(role);
             return user;
         }
     }
@@ -148,10 +129,7 @@ public class UserServiceImpl implements UserService {
 
     private boolean emailExist(String email) {
         User user = userRepository.findUserByEmail(email);
-        if (user != null) {
-            return true;
-        }
-        return false;
+        return user != null;
     }
 
 

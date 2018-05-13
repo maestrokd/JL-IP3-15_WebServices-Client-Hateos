@@ -10,7 +10,6 @@ import com.infoPulse.lessons.model.repository.ServiceRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-
 import java.util.List;
 import java.util.Random;
 
@@ -24,7 +23,7 @@ public class EventServiceImpl implements EventService {
     private CustomerServiceRepository customerServiceRepository;
 
 
-    // Getters and Setters
+    // Setters
     @Autowired
     public void setEventRepository(EventRepository eventRepository) {
         this.eventRepository = eventRepository;
@@ -44,6 +43,7 @@ public class EventServiceImpl implements EventService {
     public void setCustomerServiceRepository(CustomerServiceRepository customerServiceRepository) {
         this.customerServiceRepository = customerServiceRepository;
     }
+
 
     // Methods
     @Override

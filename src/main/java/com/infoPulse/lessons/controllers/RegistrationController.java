@@ -6,7 +6,7 @@ import com.infoPulse.lessons.model.entity.VerificationToken;
 import com.infoPulse.lessons.core.registration.events.OnRegistrationCompleteEvent;
 import com.infoPulse.lessons.model.service.UserService;
 import com.infoPulse.lessons.model.service.VerificationTokenService;
-import com.infoPulse.lessons.model.service.VerificationTokenServiceImpl;
+import org.apache.logging.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.context.MessageSource;
@@ -14,10 +14,10 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.ModelAndView;
-
 import javax.validation.Valid;
 import java.util.Calendar;
 import java.util.Locale;
+
 
 @RestController
 public class RegistrationController {
@@ -25,15 +25,12 @@ public class RegistrationController {
     // Fields
     private UserService userService;
     private VerificationTokenService verificationTokenService;
-
-
-    @Autowired
-    ApplicationEventPublisher applicationEventPublisher;
-    @Autowired
+    private Logger logger;
+    private ApplicationEventPublisher applicationEventPublisher;
     private MessageSource messageSource;
 
 
-    //Getters and Setters
+    // Setters
     @Autowired
     public void setUserService(UserService userService) {
         this.userService = userService;
@@ -44,20 +41,35 @@ public class RegistrationController {
         this.verificationTokenService = verificationTokenService;
     }
 
+    @Autowired
+    public void setLogger(Logger logger) {
+        this.logger = logger;
+    }
 
+    @Autowired
+    public void setApplicationEventPublisher(ApplicationEventPublisher applicationEventPublisher) {
+        this.applicationEventPublisher = applicationEventPublisher;
+    }
 
+    @Autowired
+    public void setMessageSource(MessageSource messageSource) {
+        this.messageSource = messageSource;
+    }
 
 
     // Methods
     @RequestMapping(value = "/userregistration", method = RequestMethod.GET)
     public ModelAndView getUserRegistrationForm(Locale locale , WebRequest webRequest) {
 
-        //
-        System.out.println(locale.getDisplayLanguage());
-        System.out.println(messageSource.getMessage("message.regSuccess", null, locale));
-        System.out.println("-------------------------------------------");
-        System.out.println(webRequest.getLocale().getDisplayLanguage());
-        System.out.println(messageSource.getMessage("message.regSuccess", null, webRequest.getLocale()));
+        // Section for training
+        logger.info(
+                "\nlocale.getDisplayLanguage(): " + locale.getDisplayLanguage() +
+                        "\n" + messageSource.getMessage("message.regSuccess", null, locale) +
+                        "\n-------------------------------------------" +
+                        "\nwebRequest.getLocale().getDisplayLanguage(): " + webRequest.getLocale().getDisplayLanguage() +
+                        "\n" + messageSource.getMessage("message.regSuccess", null, webRequest.getLocale())
+
+        );
 
         ModelAndView modelAndView = new ModelAndView();
         UserDto userDto = new UserDto();
@@ -80,6 +92,7 @@ public class RegistrationController {
             return new ModelAndView("all/users/userregistrationform", "userDto", userDto);
         }
 
+        // Section for training
 //        if (userService.isUserExist(userDto.getLogin())) {
 //            System.out.println("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
 //            bindingResult.rejectValue("login", "error.loginExists");

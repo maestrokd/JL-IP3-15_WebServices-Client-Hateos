@@ -23,21 +23,13 @@ import java.util.List;
 public class CustomerManagerController {
 
     // Fields
-    private UserService userService;
     private CustomerService customerService;
     private CustomerStatusService customerStatusService;
     private ServiceService serviceService;
-
-    @Autowired
-    Logger logger;
+    private Logger logger;
 
 
-    // Getters and Setters
-    @Autowired
-    public void setUserService(UserService userService) {
-        this.userService = userService;
-    }
-
+    // Setters
     @Autowired
     public void setCustomerService(CustomerService customerService) {
         this.customerService = customerService;
@@ -51,6 +43,11 @@ public class CustomerManagerController {
     @Autowired
     public void setServiceService(ServiceService serviceService) {
         this.serviceService = serviceService;
+    }
+
+    @Autowired
+    public void setLogger(Logger logger) {
+        this.logger = logger;
     }
 
 
@@ -132,16 +129,15 @@ public class CustomerManagerController {
             , @RequestParam String login
             , RedirectAttributes redirectAttributes
     ) {
-        System.out.println("customer/delete(phoneNumber): " + phoneNumber);
+        if (customerService.deleteCustomer(phoneNumber)) {
+            logger.info("Customer " + phoneNumber + " deleted successfully");
+            redirectAttributes.addFlashAttribute("message", "Customer " + phoneNumber + " deleted successfully");
+            return new ModelAndView("redirect:/all/users/" + login);
+        }
 
-//        User user = (User) httpSession.getAttribute("loginUser");
-//        System.out.println("User Login: " + user.getLogin());
-
-        boolean resultDel = customerService.deleteCustomer(phoneNumber);
-        System.out.println(resultDel);
-
-        redirectAttributes.addFlashAttribute("message", "Customer " + phoneNumber + " added successfully");
-        return new ModelAndView("redirect:/protected/users/" + login);
+        logger.error("Customer " + phoneNumber + " deleting failed");
+        redirectAttributes.addFlashAttribute("message", "Customer " + phoneNumber + " deleting failed");
+        return new ModelAndView("redirect:/all/users/" + login);
     }
 
 

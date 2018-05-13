@@ -137,7 +137,6 @@ public class PaymentManagerWithWebServicesController {
                     String phoneNumber
     ) {
         ModelAndView modelAndView = new ModelAndView();
-
         modelAndView.addObject("phoneNumber", phoneNumber);
         modelAndView.addObject("paymentForm", new Payment());
         modelAndView.setViewName("all/payments/paymentcreateform");
@@ -191,6 +190,9 @@ public class PaymentManagerWithWebServicesController {
         modelAndView.setViewName("all/payments/allpaymentslist");
         return modelAndView;
     }
+
+
+
 
 
 

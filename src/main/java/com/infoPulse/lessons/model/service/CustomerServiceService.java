@@ -12,6 +12,6 @@ public interface CustomerServiceService {
 
     CustomerService addCustomerService(CustomerService customerService);
 
-    void deleteCustomerService(CustomerService customerService);
+    boolean deleteCustomerService(CustomerService customerService);
 
 }

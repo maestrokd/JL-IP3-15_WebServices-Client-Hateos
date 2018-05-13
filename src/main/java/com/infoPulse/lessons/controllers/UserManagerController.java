@@ -26,12 +26,10 @@ public class UserManagerController {
     private UserService userService;
     private RoleService roleService;
     private CustomerService customerService;
-
-    @Autowired
-    Logger logger;
+    private Logger logger;
 
 
-    // Getters and Setters
+    // Setters
     @Autowired
     public void setUserService(UserService userService) {
         this.userService = userService;
@@ -47,6 +45,11 @@ public class UserManagerController {
         this.customerService = customerService;
     }
 
+    @Autowired
+    public void setLogger(Logger logger) {
+        this.logger = logger;
+    }
+
 
     // Methods
     @RequestMapping(value = "/newlogin", method = RequestMethod.GET)
@@ -55,14 +58,6 @@ public class UserManagerController {
         modelAndView.setViewName("newlogin");
         return modelAndView;
     }
-
-
-//    @RequestMapping(value = "/protected/loginhome", method = RequestMethod.GET)
-//    public ModelAndView getLoginHome() {
-//        ModelAndView modelAndView = new ModelAndView();
-//        modelAndView.setViewName("protected/loginhome");
-//        return modelAndView;
-//    }
 
 
     @RequestMapping(value = "/all/userhome", method = RequestMethod.GET)
@@ -122,11 +117,9 @@ public class UserManagerController {
             );
 
             logger.info("auth.getAuthorities().contains(new SimpleGrantedAuthority(\"ROLE_USER\")): " + auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER")));
-            logger.info("auth.getAuthorities().contains(\"ROLE_ADMIN\")): " + auth.getAuthorities().contains("ROLE_ADMIN"));
+            logger.info("auth.getAuthorities().contains(\"ROLE_ADMIN\")): " + auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_ADMIN")));
         }
 
-//        System.out.println(auth.getAuthorities().contains(new SimpleGrantedAuthority("ROLE_USER")));
-//        System.out.println(auth.getAuthorities().contains("ROLE_ADMIN"));
 
         modelAndView.addObject("userList", userService.findAll());
         modelAndView.setViewName("protected/users/userlist");

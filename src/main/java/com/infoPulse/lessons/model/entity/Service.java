@@ -27,11 +27,6 @@ public class Service {
     @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true, mappedBy = "customer", fetch = FetchType.EAGER)
     private List<CustomerService> customerServiceList = new ArrayList<>();
 
-
-//    @ManyToMany(mappedBy = "serviceList")
-//    private List<Customer> customerList = new ArrayList<>();
-
-
     @XmlTransient
     @JsonManagedReference
     @OneToMany(cascade = {CascadeType.REMOVE, CascadeType.MERGE, CascadeType.REFRESH}, orphanRemoval = true, mappedBy = "customer")
@@ -46,8 +41,8 @@ public class Service {
         this.name = name;
     }
 
-    // Getters and Setters
 
+    // Getters and Setters
     public int getId() {
         return id;
     }
@@ -102,10 +97,12 @@ public class Service {
         return name != null ? name.equals(service.name) : service.name == null;
     }
 
+
     @Override
     public int hashCode() {
         return name != null ? name.hashCode() : 0;
     }
+
 
     @Override
     public String toString() {
